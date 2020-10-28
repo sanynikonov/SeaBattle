@@ -4,8 +4,22 @@ namespace SeaBattle.Domain
 {
     public class Cell : ICloneable
     {
-        public bool HasDeck { get; set; } = false;
+        internal bool HasDeck { get; set; } = false;
         public bool IsOpened { get; set; } = false;
+
+        public CellState CurrentState
+        {
+            get
+            {
+                if (!IsOpened)
+                    return CellState.Closed;
+
+                if (HasDeck)
+                    return CellState.OpenedWithDeck;
+
+                return CellState.OpenedEmpty;
+            }
+        }
 
         public object Clone()
         {
