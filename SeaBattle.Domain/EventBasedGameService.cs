@@ -14,6 +14,32 @@ namespace SeaBattle.Domain
         {
         }
 
-        
+        public override void StartGame()
+        {
+            base.StartGame();
+
+            GameStarted?.Invoke(this);
+        }
+
+        public override void MakeMove(Point coordinates)
+        {
+            base.MakeMove(coordinates);
+
+            MoveWasMade?.Invoke(this);
+        }
+
+        public override void MakeMove(IShootStrategy strategy)
+        {
+            base.MakeMove(strategy);
+
+            MoveWasMade?.Invoke(this);
+        }
+
+        protected override void EndGame()
+        {
+            base.EndGame();
+
+            GameEnded?.Invoke(this);
+        }
     }
 }

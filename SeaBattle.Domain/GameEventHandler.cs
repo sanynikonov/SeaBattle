@@ -4,5 +4,5 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public delegate void GameEventHandler(IGameBehaviour sender, GameEventArgs args);
+    public delegate void GameEventHandler(IGameBehaviour sender);
 }
