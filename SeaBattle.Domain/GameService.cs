@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SeaBattle.Domain
@@ -9,7 +10,7 @@ namespace SeaBattle.Domain
         private readonly IFieldService firstField;
         private readonly IFieldService secondField;
 
-        private IFieldService CurrentField => CurrentPlayer == FirstPlayer ? firstField : secondField;
+        private IFieldService CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondField : firstField;
 
         public GameState CurrentState { get; private set; } = GameState.NotStarted;
         public Player Winner { get; private set; }
@@ -29,56 +30,90 @@ namespace SeaBattle.Domain
             secondField = startInfo.SecondPlayerFieldService;
         }
 
-        public void MakeMove(Point coordinates)
+        public virtual void MakeMove(Point coordinates)
         {
-            CurrentField.OpenCell(coordinates);
-            SwitchCurrentPlayer();
+            AssertGameStarted();
+            AssertGameIsNotEnded();
+
+            CurrentPlayerOppositeField.OpenCell(coordinates);
+
+            if (CheckGameEnd())
+            {
+                EndGame();
+            }
+            else
+            {
+                SwitchCurrentPlayer();
+            }
         }
 
         public virtual void MakeMove(IShootStrategy strategy)
         {
-            strategy.Shoot(CurrentField);
-            SwitchCurrentPlayer();
+            AssertGameStarted();
+            AssertGameIsNotEnded();
+
+            if (strategy == null)
+            {
+                throw new ArgumentNullException(nameof(strategy));
+            }
+
+            strategy.Shoot(CurrentPlayerOppositeField);
+            
+            if (CheckGameEnd())
+            {
+                EndGame();
+            }
+            else
+            {
+                SwitchCurrentPlayer();
+            }
         }
 
         public virtual void StartGame()
         {
+            AssertGameIsNotEnded();
+
             if (CurrentState == GameState.Started)
             {
                 throw new Exception("Game is already started.");
             }
 
-            if (CurrentState == GameState.Ended)
-            {
-                throw new Exception("Game is already ended.");
-            }
-
             CurrentState = GameState.Started;
-        }
-
-        protected void CheckGameEnd()
-        {
-
-        }
-
-        protected virtual void SwitchCurrentPlayer()
-        {
-            CurrentPlayer = CurrentPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
         }
 
         protected virtual void EndGame()
         {
+            Winner = CurrentPlayer;
+            CurrentState = GameState.Ended;
+        }
+
+        protected bool CheckGameEnd()
+        {
+            return CurrentPlayerOppositeField.FieldCopy.Cells
+                .Cast<Cell>()
+                .Where(x => x.HasDeck)
+                .All(x => x.IsOpened);
+        }
+
+        protected void SwitchCurrentPlayer()
+        {
+            CurrentPlayer = CurrentPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
+        }
+
+        private void AssertGameIsNotEnded()
+        {
             if (CurrentState == GameState.Ended)
             {
-                throw new Exception("Game is ended already.");
+                throw new Exception("Game is already ended.");
             }
+        }
 
-            if (CurrentState == GameState.NotStarted)
+        private void AssertGameStarted()
+        {
+            if (CurrentState != GameState.Started)
             {
                 throw new Exception("Game is not started yet.");
             }
-
-            CurrentState = GameState.Ended;
         }
     }
 }

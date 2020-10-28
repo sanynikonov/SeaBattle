@@ -13,7 +13,7 @@ namespace SeaBattle.Domain
         Field SecondPlayerField { get; }
 
         GameState CurrentState { get; }
-        Player Winner { get; }
         Player CurrentPlayer { get; }
+        Player Winner { get; }
     }
 }
