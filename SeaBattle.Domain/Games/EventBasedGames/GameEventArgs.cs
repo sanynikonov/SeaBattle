@@ -6,13 +6,11 @@ namespace SeaBattle.Domain
 {
     public class GameEventArgs
     {
-        public Field FirstPlayerField { get; }
-        public Field SecondPlayerField { get; }
+        public BoardStatus BoardStatus { get; }
 
-        public GameEventArgs(Field firstPlayerField, Field secondPlayerField)
+        public GameEventArgs(BoardStatus boardStatus)
         {
-            FirstPlayerField = firstPlayerField;
-            SecondPlayerField = secondPlayerField;
+            BoardStatus = boardStatus;
         }
     }
 }

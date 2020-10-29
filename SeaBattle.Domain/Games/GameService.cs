@@ -7,17 +7,17 @@ namespace SeaBattle.Domain
 {
     public class GameService : IGameBehaviour, IGameInfo
     {
-        private readonly IFieldService firstField;
-        private readonly IFieldService secondField;
+        protected readonly IFieldService firstFieldService;
+        protected readonly IFieldService secondFieldService;
 
-        private IFieldService CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondField : firstField;
+        private IFieldService CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondFieldService : firstFieldService;
 
         public GameState CurrentState { get; private set; } = GameState.NotStarted;
         public Player Winner { get; private set; }
         public Player CurrentPlayer { get; private set; }
 
-        public Field FirstPlayerField => firstField.FieldCopy;
-        public Field SecondPlayerField => secondField.FieldCopy;
+        public Field FirstPlayerField => firstFieldService.FieldCopy;
+        public Field SecondPlayerField => secondFieldService.FieldCopy;
 
         public Player FirstPlayer { get; private set; }
         public Player SecondPlayer { get; private set; }
@@ -26,11 +26,11 @@ namespace SeaBattle.Domain
         {
             FirstPlayer = startInfo.FirstPlayer;
             SecondPlayer = startInfo.SecondPlayer;
-            firstField = startInfo.FirstPlayerFieldService;
-            secondField = startInfo.SecondPlayerFieldService;
+            firstFieldService = startInfo.FirstPlayerFieldService;
+            secondFieldService = startInfo.SecondPlayerFieldService;
         }
 
-        public virtual void MakeMove(Point coordinates)
+        public virtual BoardStatus MakeMove(Point coordinates)
         {
             AssertGameStarted();
             AssertGameIsNotEnded();
@@ -45,9 +45,15 @@ namespace SeaBattle.Domain
             {
                 SwitchCurrentPlayer();
             }
+
+            return new BoardStatus
+            {
+                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
+                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+            };
         }
 
-        public virtual void MakeMove(IShootStrategy strategy)
+        public virtual BoardStatus MakeMove(IShootStrategy strategy)
         {
             AssertGameStarted();
             AssertGameIsNotEnded();
@@ -67,6 +73,12 @@ namespace SeaBattle.Domain
             {
                 SwitchCurrentPlayer();
             }
+
+            return new BoardStatus
+            {
+                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
+                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+            };
         }
 
         public virtual void StartGame()

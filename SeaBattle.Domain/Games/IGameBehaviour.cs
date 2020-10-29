@@ -7,7 +7,7 @@ namespace SeaBattle.Domain
     public interface IGameBehaviour
     {
         void StartGame();
-        void MakeMove(Point coordinates);
-        void MakeMove(IShootStrategy strategy);
+        BoardStatus MakeMove(Point coordinates);
+        BoardStatus MakeMove(IShootStrategy strategy);
     }
 }

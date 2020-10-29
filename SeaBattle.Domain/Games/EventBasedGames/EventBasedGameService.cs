@@ -18,28 +18,44 @@ namespace SeaBattle.Domain
         {
             base.StartGame();
 
-            GameStarted?.Invoke(this);
+            var status = new BoardStatus
+            {
+                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
+                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+            };
+
+            GameStarted?.Invoke(this, new GameEventArgs(status));
         }
 
-        public override void MakeMove(Point coordinates)
+        public override BoardStatus MakeMove(Point coordinates)
         {
-            base.MakeMove(coordinates);
+            var status = base.MakeMove(coordinates);
 
-            MoveWasMade?.Invoke(this);
+            MoveWasMade?.Invoke(this, new GameEventArgs(status));
+
+            return status;
         }
 
-        public override void MakeMove(IShootStrategy strategy)
+        public override BoardStatus MakeMove(IShootStrategy strategy)
         {
-            base.MakeMove(strategy);
+            var status = base.MakeMove(strategy);
 
-            MoveWasMade?.Invoke(this);
+            MoveWasMade?.Invoke(this, new GameEventArgs(status));
+
+            return status;
         }
 
         protected override void EndGame()
         {
             base.EndGame();
 
-            GameEnded?.Invoke(this);
+            var status = new BoardStatus
+            {
+                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
+                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+            };
+
+            GameEnded?.Invoke(this, new GameEventArgs(status));
         }
     }
 }
