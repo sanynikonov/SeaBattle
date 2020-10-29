@@ -8,6 +8,6 @@ namespace SeaBattle.Domain
     {
         Field FieldCopy { get; }
         void OpenCell(Point coordinates);
-        bool TryGetWreckedDecksOfDamagedShips(out Point[] coordinates);
+        Point[] GetWreckedDecksOfDamagedShips();
     }
 }

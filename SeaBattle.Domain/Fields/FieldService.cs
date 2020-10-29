@@ -36,7 +36,7 @@ namespace SeaBattle.Domain
             }
         }
 
-        public bool TryGetWreckedDecksOfDamagedShips(out Point[] coordinates)
+        public Point[] GetWreckedDecksOfDamagedShips()
         {
             var ships = GetShipsCoordinates();
 
@@ -47,9 +47,7 @@ namespace SeaBattle.Domain
                 .SelectMany(x => x)
                 .Where(x => x.CurrentState == CellState.OpenedWithDeck);
 
-            coordinates = GetCellsCoordinates(damagedDecks).ToArray();
-
-            return coordinates.Any();
+            return GetCellsCoordinates(damagedDecks).ToArray();
         }
 
         private IEnumerable<Cell[]> GetShipsCoordinates()
@@ -77,13 +75,18 @@ namespace SeaBattle.Domain
             return x >= 0 && x < field.Dimension && y >= 0 && y < field.Dimension;
         }
 
-        private static (int x, int y)[] GetNeighbours(int x, int y)
+        private static Point[] GetNeighbours(int x, int y)
         {
-            return new (int x, int y)[]
+            return new Point[]
             {
-                (x - 1, y - 1), (x - 1, y), (x - 1, y + 1),
-                (x, y - 1), (x, y + 1),
-                (x + 1, y - 1), (x + 1, y), (x + 1, y + 1)
+                new Point(x - 1, y - 1),
+                new Point(x - 1, y),
+                new Point(x - 1, y + 1),
+                new Point(x, y - 1),
+                new Point(x, y + 1),
+                new Point(x + 1, y - 1),
+                new Point(x + 1, y),
+                new Point(x + 1, y + 1)
             };
         }
 
@@ -125,7 +128,7 @@ namespace SeaBattle.Domain
 
             foreach (var coords in neighbours)
             {
-                TryOpenCell(coords.x, coords.y);
+                TryOpenCell(coords.X, coords.Y);
             }
         }
 
