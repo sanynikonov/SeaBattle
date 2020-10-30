@@ -78,9 +78,56 @@ namespace SeaBattle.Domain
                 throw new Exception("There is already set ship on this coordinates.");
             }
 
+            if (NeighbourCellsHaveDeck(first, second))
+            {
+                throw new Exception("Neighbour cells have decks.");
+            }
+
             cells.ForEach(c => c.HasDeck = true);
 
             availibleShipsToPlace[shipType]--;
+        }
+
+        private static Point[] GetNeighbours(int x, int y)
+        {
+            return new Point[]
+            {
+                new Point(x - 1, y - 1),
+                new Point(x - 1, y),
+                new Point(x - 1, y + 1),
+                new Point(x, y - 1),
+                new Point(x, y + 1),
+                new Point(x + 1, y - 1),
+                new Point(x + 1, y),
+                new Point(x + 1, y + 1)
+            };
+        }
+
+        private bool NeighbourCellsHaveDeck(Point first, Point second)
+        {
+            IEnumerable<Point> shipCoordinates;
+
+            if (first.X == second.X)
+            {
+                shipCoordinates = Enumerable.Range(first.Y, first.Y - second.Y).Select(y => new Point(first.X, y));
+            }
+            else
+            {
+                shipCoordinates = Enumerable.Range(first.X, first.X - second.X).Select(x => new Point(x, first.Y));
+            }
+
+            return NeighbourCellsHaveDeck(shipCoordinates);
+        }
+
+        private bool NeighbourCellsHaveDeck(IEnumerable<Point> shipCoordinates)
+        {
+            return shipCoordinates
+                .Select(p => GetNeighbours(p.X, p.Y))
+                .SelectMany(x => x)
+                .Any(p => p.X >= 0 && p.X < Result.Dimension
+                        && p.Y >= 0 && p.Y < Result.Dimension
+                        && Result.Cells[p.X, p.Y].HasDeck
+                        && !shipCoordinates.Any(s => s.X == p.X || s.Y == p.Y ));
         }
 
         private static bool FieldWillHaveTooBigShipsDensity(Dictionary<ShipType, int> shipsAmount, int dimension)
