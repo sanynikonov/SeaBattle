@@ -127,7 +127,7 @@ namespace SeaBattle.Domain
                 .Any(p => p.X >= 0 && p.X < Result.Dimension
                         && p.Y >= 0 && p.Y < Result.Dimension
                         && Result.Cells[p.X, p.Y].HasDeck
-                        && !shipCoordinates.Any(s => s.X == p.X || s.Y == p.Y ));
+                        && !shipCoordinates.Contains(p));
         }
 
         private static bool FieldWillHaveTooBigShipsDensity(Dictionary<ShipType, int> shipsAmount, int dimension)
