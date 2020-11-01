@@ -29,6 +29,8 @@ namespace SeaBattle.Domain
             }
 
             availibleShipsToPlace = shipsAmount;
+
+            Result.ShipsCount = shipsAmount;
         }
 
         public void SetDimension(int dimension)
