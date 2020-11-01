@@ -7,7 +7,7 @@ namespace SeaBattle.Domain
 {
     public class Field : ICloneable
     {
-        public IReadOnlyDictionary<int, int> ShipsCount { get; set; }
+        public IReadOnlyDictionary<ShipType, int> ShipsCount { get; set; }
         public int Dimension => Cells.GetLength(0);
         public Cell[,] Cells { get; set; }
 
