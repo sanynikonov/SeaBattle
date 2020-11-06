@@ -134,12 +134,13 @@ namespace SeaBattle.Domain
 
         private static bool FieldWillHaveTooBigShipsDensity(Dictionary<ShipType, int> shipsAmount, int dimension)
         {
-            const double highestAvailibleDensityCoef = 1.22;
+            const double highestAvailibleDensityCoef = 1.21;
 
             var decksCount = shipsAmount.Sum(x => (int)x.Key * x.Value);
             var maxNeighbourCellsCount = shipsAmount.Sum(x => ((int)x.Key * 2 + 6) * x.Value);
+            var densityCoef = (decksCount + maxNeighbourCellsCount) / Math.Pow(dimension, 2);
 
-            return decksCount + maxNeighbourCellsCount / Math.Pow(dimension, 2) > highestAvailibleDensityCoef;
+            return densityCoef > highestAvailibleDensityCoef;
         }
 
         private static int GetShipLength(Point first, Point second)
