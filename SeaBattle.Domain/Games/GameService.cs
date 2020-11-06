@@ -91,6 +91,8 @@ namespace SeaBattle.Domain
             }
 
             CurrentState = GameState.Started;
+
+            CurrentPlayer = FirstPlayer;
         }
 
         protected virtual void EndGame()
