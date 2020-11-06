@@ -9,7 +9,7 @@ namespace SeaBattle.Domain
     {
         public IShootStrategy GetShootStrategy(Point[] wreckedDecks)
         {
-            if (!wreckedDecks.Any())
+            if (wreckedDecks == null || !wreckedDecks.Any())
             {
                 return new RandomShootStrategy();
             }
