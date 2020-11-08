@@ -154,17 +154,18 @@ namespace SeaBattle.Domain
         private List<Cell> GetCellsToPlaceShip(Point first, Point second)
         {
             var cells = new List<Cell>();
+            var shipLength = GetShipLength(first, second);
 
             if (first.X == second.X)
             {
-                for (int i = 0; i < second.Y - first.Y; i++)
+                for (int i = 0; i < shipLength; i++)
                 {
                     cells.Add(Result.Cells[first.X, i]);
                 }
             }
             else if (first.Y == second.Y)
             {
-                for (int i = 0; i < second.X - first.X; i++)
+                for (int i = 0; i < shipLength; i++)
                 {
                     cells.Add(Result.Cells[i, first.Y]);
                 }
