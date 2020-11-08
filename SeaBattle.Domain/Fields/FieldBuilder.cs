@@ -23,7 +23,7 @@ namespace SeaBattle.Domain
                 throw new FieldBuilderException($"{nameof(shipsAmount)} is null.");
             }
 
-            if (FieldWillHaveTooBigShipsDensity(shipsAmount, Result.Dimension))
+            if (ShipsStorageCausesHugeShipsDensity(shipsAmount, Result.Dimension))
             {
                 throw new FieldBuilderException("Passed ships amount will cause too big ships density.");
             }
@@ -132,7 +132,7 @@ namespace SeaBattle.Domain
                         && !shipCoordinates.Contains(p));
         }
 
-        private static bool FieldWillHaveTooBigShipsDensity(Dictionary<ShipType, int> shipsAmount, int dimension)
+        private static bool ShipsStorageCausesHugeShipsDensity(Dictionary<ShipType, int> shipsAmount, int dimension)
         {
             const double highestAvailibleDensityCoef = 1.21;
 
