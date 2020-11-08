@@ -108,14 +108,15 @@ namespace SeaBattle.Domain
         private bool NeighbourCellsHaveDeck(Point first, Point second)
         {
             IEnumerable<Point> shipCoordinates;
+            var shipLength = GetShipLength(first, second);
 
             if (first.X == second.X)
             {
-                shipCoordinates = Enumerable.Range(first.Y, first.Y - second.Y).Select(y => new Point(first.X, y));
+                shipCoordinates = Enumerable.Range(first.Y, shipLength).Select(y => new Point(first.X, y));
             }
             else
             {
-                shipCoordinates = Enumerable.Range(first.X, first.X - second.X).Select(x => new Point(x, first.Y));
+                shipCoordinates = Enumerable.Range(first.X, shipLength).Select(x => new Point(x, first.Y));
             }
 
             return NeighbourCellsHaveDeck(shipCoordinates);
