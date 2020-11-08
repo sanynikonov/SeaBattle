@@ -9,34 +9,35 @@ namespace SeaBattle.Domain
     {
         private readonly Point wreckedDeckCoordinates;
         private readonly bool shipIsSetHorizontally;
+        private readonly IFieldService fieldService;
 
-        public CorrectDirectionShootStrategy(Point wreckedDeckCoordinates, bool shipIsSetHorizontally)
+        public CorrectDirectionShootStrategy(IFieldService fieldService, Point wreckedDeckCoordinates, bool shipIsSetHorizontally)
         {
+            this.fieldService = fieldService;
             this.wreckedDeckCoordinates = wreckedDeckCoordinates;
             this.shipIsSetHorizontally = shipIsSetHorizontally;
         }
 
-        public void Shoot(IFieldService fieldService)
+        public void Shoot(Field field)
         {
-            var coordinates = FindNeighbourCellToOpen(fieldService);
+            var coordinates = FindNeighbourCellToOpen(field);
 
-            fieldService.OpenCell(coordinates);
+            fieldService.OpenCell(field, coordinates);
         }
 
-        private Point FindNeighbourCellToOpen(IFieldService fieldService)
+        private Point FindNeighbourCellToOpen(Field field)
         {
             var random = new Random();
 
-            var potentialCoordinates = GetNeighbourUnopenedCells(fieldService);
+            var potentialCoordinates = GetNeighbourUnopenedCells(field);
 
             var index = random.Next(0, potentialCoordinates.Length);
 
             return potentialCoordinates[index];
         }
 
-        private Point[] GetNeighbourUnopenedCells(IFieldService fieldService)
+        private Point[] GetNeighbourUnopenedCells(Field field)
         {
-            var field = fieldService.FieldCopy;
             Point[] potentialCoordinates;
 
             if (shipIsSetHorizontally)

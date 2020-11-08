@@ -6,6 +6,6 @@ namespace SeaBattle.Domain
 {
     public interface IShootStrategy
     {
-        void Shoot(IFieldService fieldService);
+        void Shoot(Field field);
     }
 }

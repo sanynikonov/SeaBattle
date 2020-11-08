@@ -8,15 +8,15 @@ namespace SeaBattle.Domain
     {
         public Player FirstPlayer { get; }
         public Player SecondPlayer { get; }
-        public IFieldService FirstPlayerFieldService { get; }
-        public IFieldService SecondPlayerFieldService { get; }
+        public Field FirstPlayerField { get; }
+        public Field SecondPlayerField { get; }
 
-        public GameStartInfo(Player firstPlayer, Player secondPlayer, IFieldService firstPlayerFieldService, IFieldService secondPlayerFieldService)
+        public GameStartInfo(Player firstPlayer, Player secondPlayer, Field firstPlayerField, Field secondPlayerField)
         {
             FirstPlayer = firstPlayer;
             SecondPlayer = secondPlayer;
-            FirstPlayerFieldService = firstPlayerFieldService;
-            SecondPlayerFieldService = secondPlayerFieldService;
+            FirstPlayerField = firstPlayerField;
+            SecondPlayerField = secondPlayerField;
         }
     }
 }

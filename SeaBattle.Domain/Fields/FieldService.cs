@@ -7,16 +7,12 @@ namespace SeaBattle.Domain
 {
     public class FieldService : IFieldService
     {
-        private readonly Field field;
-
-        public FieldService(Field field)
+        public Field GetFieldCopy(Field field)
         {
-            this.field = field;
+            return field.Clone() as Field;
         }
 
-        public Field FieldCopy => field.Clone() as Field;
-
-        public void OpenCell(Point coordinates)
+        public void OpenCell(Field field, Point coordinates)
         {
             if (coordinates.X >= field.Dimension || coordinates.Y >= field.Dimension)
             {
@@ -30,15 +26,15 @@ namespace SeaBattle.Domain
 
             field.Cells[coordinates.X, coordinates.Y].IsOpened = true;
 
-            if (ShipIsDestroyed(coordinates))
+            if (ShipIsDestroyed(field, coordinates))
             {
-                OpenCellsNearDestroyedShip(coordinates);
+                OpenCellsNearDestroyedShip(field, coordinates);
             }
         }
 
-        public Point[] GetWreckedDecksOfDamagedShips()
+        public Point[] GetWreckedDecksOfDamagedShips(Field field)
         {
-            var ships = GetShipsCoordinates();
+            var ships = GetShipsCoordinates(field);
 
             var damagedButNotKilledShips = ships
                 .Where(ship => ship.Any(deck => deck.IsOpened) && ship.Any(deck => !deck.IsOpened));
@@ -47,10 +43,10 @@ namespace SeaBattle.Domain
                 .SelectMany(x => x)
                 .Where(x => x.CurrentState == CellState.OpenedWithDeck);
 
-            return GetCellsCoordinates(damagedDecks).ToArray();
+            return GetCellsCoordinates(field, damagedDecks).ToArray();
         }
 
-        private IEnumerable<Cell[]> GetShipsCoordinates()
+        private IEnumerable<Cell[]> GetShipsCoordinates(Field field)
         {
             var ships = new List<Cell[]>();
             Cell[] ship;
@@ -61,7 +57,7 @@ namespace SeaBattle.Domain
                 {
                     if (field.Cells[i, j].HasDeck && !ships.Any(x => x.Contains(field.Cells[i, j])))
                     {
-                        ship = GetShipCells(new Point(i, j)).ToArray();
+                        ship = GetShipCells(field, new Point(i, j)).ToArray();
                         ships.Add(ship);
                     }
                 }
@@ -70,9 +66,9 @@ namespace SeaBattle.Domain
             return ships;
         }
 
-        private bool FieldHasCoordinates(int x, int y)
+        private bool FieldHasCoordinates(int x, int y, int dimension)
         {
-            return x >= 0 && x < field.Dimension && y >= 0 && y < field.Dimension;
+            return x >= 0 && x < dimension && y >= 0 && y < dimension;
         }
 
         private static Point[] GetNeighbours(int x, int y)
@@ -90,19 +86,19 @@ namespace SeaBattle.Domain
             };
         }
 
-        private void OpenCellsNearDestroyedShip(Point coordinates)
+        private void OpenCellsNearDestroyedShip(Field field, Point coordinates)
         {
-            var shipCells = GetShipCells(coordinates).ToList();
+            var shipCells = GetShipCells(field, coordinates).ToList();
 
-            var cellsCoordinates = GetCellsCoordinates(shipCells);
+            var cellsCoordinates = GetCellsCoordinates(field, shipCells);
 
             foreach (var point in cellsCoordinates)
             {
-                OpenCellsAround(point);
+                OpenCellsAround(field, point);
             }
         }
 
-        private IEnumerable<Point> GetCellsCoordinates(IEnumerable<Cell> cell)
+        private IEnumerable<Point> GetCellsCoordinates(Field field, IEnumerable<Cell> cell)
         {
             var array = field.Cells.Cast<Cell>().ToArray();
 
@@ -111,7 +107,7 @@ namespace SeaBattle.Domain
             return absoluteIndeces.Select(index => new Point { X = index / field.Dimension, Y = index % field.Dimension });
         }
 
-        private void OpenCellsAround(Point coordinates)
+        private void OpenCellsAround(Field field, Point coordinates)
         {
             void TryOpenCell(int x, int y)
             {
@@ -132,19 +128,19 @@ namespace SeaBattle.Domain
             }
         }
 
-        private bool ShipIsDestroyed(Point coordinates)
+        private bool ShipIsDestroyed(Field field, Point coordinates)
         {
             if (!field.Cells[coordinates.X, coordinates.Y].HasDeck)
             {
                 return false;
             }
 
-            var shipCells = GetShipCells(coordinates);
+            var shipCells = GetShipCells(field, coordinates);
 
             return shipCells.All(cell => cell.IsOpened);
         }
 
-        private IEnumerable<Cell> GetShipCells(Point coordinates)
+        private IEnumerable<Cell> GetShipCells(Field field, Point coordinates)
         {
             IEnumerable<Cell> GetShipHorizontally(Point coordinates)
             {

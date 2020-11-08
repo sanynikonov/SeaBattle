@@ -6,17 +6,23 @@ namespace SeaBattle.Domain
 {
     public class RandomShootStrategy : IShootStrategy
     {
-        public void Shoot(IFieldService fieldService)
-        {
-            var coordinates = FindRandomCellToOpen(fieldService);
+        private readonly IFieldService fieldService;
 
-            fieldService.OpenCell(coordinates);
+        public RandomShootStrategy(IFieldService fieldService)
+        {
+            this.fieldService = fieldService;
         }
 
-        private Point FindRandomCellToOpen(IFieldService fieldService)
+        public void Shoot(Field field)
+        {
+            var coordinates = FindRandomCellToOpen(field);
+
+            fieldService.OpenCell(field, coordinates);
+        }
+
+        private Point FindRandomCellToOpen(Field field)
         {
             var random = new Random();
-            var field = fieldService.FieldCopy;
 
             int randomX;
             int randomY;

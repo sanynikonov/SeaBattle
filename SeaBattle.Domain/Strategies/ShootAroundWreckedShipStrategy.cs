@@ -8,22 +8,23 @@ namespace SeaBattle.Domain
     public class ShootAroundWreckedShipStrategy : IShootStrategy
     {
         private readonly Point wreckedDeckCoordinates;
+        private readonly IFieldService fieldService;
 
-        public ShootAroundWreckedShipStrategy(Point wreckedDeckCoordinates)
+        public ShootAroundWreckedShipStrategy(IFieldService fieldService, Point wreckedDeckCoordinates)
         {
+            this.fieldService = fieldService;
             this.wreckedDeckCoordinates = wreckedDeckCoordinates;
         }
 
-        public void Shoot(IFieldService fieldService)
+        public void Shoot(Field field)
         {
-            var coordinates = FindNeighbourCellToOpen(fieldService);
+            var coordinates = FindNeighbourCellToOpen(field);
 
-            fieldService.OpenCell(coordinates);
+            fieldService.OpenCell(field, coordinates);
         }
 
-        private Point FindNeighbourCellToOpen(IFieldService fieldService)
+        private Point FindNeighbourCellToOpen(Field field)
         {
-            var field = fieldService.FieldCopy;
             var random = new Random();
 
             var potentialPoints = new Point[]

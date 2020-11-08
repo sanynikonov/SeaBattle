@@ -6,8 +6,8 @@ namespace SeaBattle.Domain
 {
     public interface IFieldService
     {
-        Field FieldCopy { get; }
-        void OpenCell(Point coordinates);
-        Point[] GetWreckedDecksOfDamagedShips();
+        Field GetFieldCopy(Field field);
+        void OpenCell(Field field, Point coordinates);
+        Point[] GetWreckedDecksOfDamagedShips(Field field);
     }
 }

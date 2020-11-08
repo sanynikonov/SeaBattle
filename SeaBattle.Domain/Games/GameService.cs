@@ -7,27 +7,28 @@ namespace SeaBattle.Domain
 {
     public class GameService : IGameBehaviour, IGameInfo
     {
-        protected readonly IFieldService firstFieldService;
-        protected readonly IFieldService secondFieldService;
+        protected readonly IFieldService fieldService;
+        protected readonly Field firstPlayerField;
+        protected readonly Field secondPlayerField;
 
-        private IFieldService CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondFieldService : firstFieldService;
+        private Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? SecondPlayerField : FirstPlayerField;
 
         public GameState CurrentState { get; private set; } = GameState.NotStarted;
         public Player Winner { get; private set; }
         public Player CurrentPlayer { get; private set; }
 
-        public Field FirstPlayerField => firstFieldService.FieldCopy;
-        public Field SecondPlayerField => secondFieldService.FieldCopy;
+        public Field FirstPlayerField => fieldService.GetFieldCopy(firstPlayerField);
+        public Field SecondPlayerField => fieldService.GetFieldCopy(secondPlayerField);
 
         public Player FirstPlayer { get; private set; }
         public Player SecondPlayer { get; private set; }
 
-        public GameService(GameStartInfo startInfo)
+        public GameService(GameStartInfo startInfo, IFieldService fieldService)
         {
             FirstPlayer = startInfo.FirstPlayer;
             SecondPlayer = startInfo.SecondPlayer;
-            firstFieldService = startInfo.FirstPlayerFieldService;
-            secondFieldService = startInfo.SecondPlayerFieldService;
+            firstPlayerField = startInfo.FirstPlayerField;
+            secondPlayerField = startInfo.SecondPlayerField;
         }
 
         public virtual BoardStatus MakeMove(Point coordinates)
@@ -35,7 +36,7 @@ namespace SeaBattle.Domain
             AssertGameStarted();
             AssertGameIsNotEnded();
 
-            CurrentPlayerOppositeField.OpenCell(coordinates);
+            fieldService.OpenCell(CurrentPlayerOppositeField, coordinates);
 
             if (CheckGameEnd())
             {
@@ -48,8 +49,8 @@ namespace SeaBattle.Domain
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
-                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+                FirstFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(FirstPlayerField),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(SecondPlayerField)
             };
         }
 
@@ -76,8 +77,8 @@ namespace SeaBattle.Domain
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = firstFieldService.GetWreckedDecksOfDamagedShips(),
-                SecondFieldWoundedShipsCoordinates = secondFieldService.GetWreckedDecksOfDamagedShips()
+                FirstFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(FirstPlayerField),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(SecondPlayerField)
             };
         }
 
@@ -103,7 +104,7 @@ namespace SeaBattle.Domain
 
         protected bool CheckGameEnd()
         {
-            return CurrentPlayerOppositeField.FieldCopy.Cells
+            return CurrentPlayerOppositeField.Cells
                 .Cast<Cell>()
                 .Where(x => x.HasDeck)
                 .All(x => x.IsOpened);
