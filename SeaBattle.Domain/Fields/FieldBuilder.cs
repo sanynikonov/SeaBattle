@@ -20,12 +20,12 @@ namespace SeaBattle.Domain
         {
             if (shipsAmount == null)
             {
-                throw new Exception($"{nameof(shipsAmount)} is null.");
+                throw new FieldBuilderException($"{nameof(shipsAmount)} is null.");
             }
 
             if (FieldWillHaveTooBigShipsDensity(shipsAmount, Result.Dimension))
             {
-                throw new Exception("Passed ships amount will cause too big ships density.");
+                throw new FieldBuilderException("Passed ships amount will cause too big ships density.");
             }
 
             availibleShipsToPlace = shipsAmount;
@@ -37,7 +37,7 @@ namespace SeaBattle.Domain
         {
             if (dimension <= 0)
             {
-                throw new Exception("Dimension should be more than zero.");
+                throw new FieldBuilderException("Dimension should be more than zero.");
             }
 
             Result.Cells = new Cell[dimension, dimension];
@@ -58,31 +58,31 @@ namespace SeaBattle.Domain
 
             if (first.X != second.X && first.Y != second.Y)
             {
-                throw new Exception("Arguments cause diagonal ship direction.");
+                throw new FieldBuilderException("Arguments cause diagonal ship direction.");
             }
 
             var shipLength = GetShipLength(first, second);
 
             if (!Enum.TryParse<ShipType>(shipLength.ToString(), out var shipType))
             {
-                throw new Exception("Unknown ship type.");
+                throw new FieldBuilderException("Unknown ship type.");
             }
 
             if (!availibleShipsToPlace.TryGetValue(shipType, out var shipsLeftCount) || shipsLeftCount == 0)
             {
-                throw new Exception("No availible ships for current ship type.");
+                throw new FieldBuilderException("No availible ships for current ship type.");
             }
 
             var cells = GetCellsToPlaceShip(first, second);
 
             if (cells.Any(c => c.HasDeck))
             {
-                throw new Exception("There is already set ship on this coordinates.");
+                throw new FieldBuilderException("There is already set ship on this coordinates.");
             }
 
             if (NeighbourCellsHaveDeck(first, second))
             {
-                throw new Exception("Neighbour cells have decks.");
+                throw new FieldBuilderException("Neighbour cells have decks.");
             }
 
             cells.ForEach(c => c.HasDeck = true);
@@ -175,7 +175,7 @@ namespace SeaBattle.Domain
             if (coordinates.X < 0 || coordinates.X >= Result.Dimension ||
                 coordinates.Y < 0 || coordinates.Y >= Result.Dimension)
             {
-                throw new Exception("Coordinates are out of range.");
+                throw new FieldBuilderException("Coordinates are out of range.");
             }
         }
     }
