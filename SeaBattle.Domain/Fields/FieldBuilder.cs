@@ -145,7 +145,9 @@ namespace SeaBattle.Domain
 
         private static int GetShipLength(Point first, Point second)
         {
-            return second.X - first.X > 0 ? second.X - first.X + 1 : second.Y - second.Y + 1;
+            return Math.Abs(second.X - first.X) != 0
+                ? Math.Abs(second.X - first.X) + 1
+                : Math.Abs(second.Y - first.Y) + 1;
         }
 
         private List<Cell> GetCellsToPlaceShip(Point first, Point second)
