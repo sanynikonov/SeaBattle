@@ -55,8 +55,8 @@ namespace SeaBattle.Client
             (
                 new Player { Name = firstPlayerName },
                 new Player { Name = secondPlayerName },
-                new FieldService(firstField),
-                new FieldService(secondField)
+                firstField,
+                secondField
             );
         }
 

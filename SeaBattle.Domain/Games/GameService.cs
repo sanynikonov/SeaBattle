@@ -29,6 +29,8 @@ namespace SeaBattle.Domain
             SecondPlayer = startInfo.SecondPlayer;
             firstPlayerField = startInfo.FirstPlayerField;
             secondPlayerField = startInfo.SecondPlayerField;
+
+            this.fieldService = fieldService;
         }
 
         public virtual BoardStatus MakeMove(Point coordinates)
