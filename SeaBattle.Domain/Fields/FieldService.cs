@@ -14,7 +14,7 @@ namespace SeaBattle.Domain
 
         public void OpenCell(Field field, Point coordinates)
         {
-            if (coordinates.X >= field.Dimension || coordinates.Y >= field.Dimension)
+            if (coordinates.IsInRange(0, field.Dimension))
             {
                 throw new Exception("Coordinates out of range");
             }
@@ -66,26 +66,6 @@ namespace SeaBattle.Domain
             return ships;
         }
 
-        private bool FieldHasCoordinates(int x, int y, int dimension)
-        {
-            return x >= 0 && x < dimension && y >= 0 && y < dimension;
-        }
-
-        private static Point[] GetNeighbours(int x, int y)
-        {
-            return new Point[]
-            {
-                new Point(x - 1, y - 1),
-                new Point(x - 1, y),
-                new Point(x - 1, y + 1),
-                new Point(x, y - 1),
-                new Point(x, y + 1),
-                new Point(x + 1, y - 1),
-                new Point(x + 1, y),
-                new Point(x + 1, y + 1)
-            };
-        }
-
         private void OpenCellsNearDestroyedShip(Field field, Point coordinates)
         {
             var shipCells = GetShipCells(field, coordinates).ToList();
@@ -109,22 +89,19 @@ namespace SeaBattle.Domain
 
         private void OpenCellsAround(Field field, Point coordinates)
         {
-            void TryOpenCell(int x, int y)
+            void TryOpenCell(Point point)
             {
-                if (x >= 0 && x < field.Dimension && y >= 0 && y < field.Dimension)
+                if (point.IsInRange(0, field.Dimension))
                 {
-                    field.Cells[x, y].IsOpened = true;
+                    field.Cells[point.X, point.Y].IsOpened = true;
                 }
             }
 
-            var x = coordinates.X;
-            var y = coordinates.Y;
-
-            var neighbours = GetNeighbours(x, y);
+            var neighbours = coordinates.GetNeighbours();
 
             foreach (var coords in neighbours)
             {
-                TryOpenCell(coords.X, coords.Y);
+                TryOpenCell(coords);
             }
         }
 
@@ -157,7 +134,7 @@ namespace SeaBattle.Domain
                 cells.Add(field.Cells[coordinates.X, coordinates.Y]);
 
                 deltaX = coordinates.X + 1;
-                while (deltaX < field.Cells.GetLength(0) && field.Cells[deltaX, coordinates.Y].HasDeck)
+                while (deltaX < field.Dimension && field.Cells[deltaX, coordinates.Y].HasDeck)
                 {
                     cells.Add(field.Cells[deltaX, coordinates.Y]);
                     deltaX++;
@@ -181,7 +158,7 @@ namespace SeaBattle.Domain
                 cells.Add(field.Cells[coordinates.X, coordinates.Y]);
 
                 deltaY = coordinates.Y - 1;
-                while (deltaY < field.Cells.GetLength(1) && field.Cells[coordinates.X, deltaY].HasDeck)
+                while (deltaY < field.Dimension && field.Cells[coordinates.X, deltaY].HasDeck)
                 {
                     cells.Add(field.Cells[coordinates.X, deltaY]);
                     deltaY++;
@@ -192,7 +169,7 @@ namespace SeaBattle.Domain
 
 
             var shipIsPlacedHorizontally = (coordinates.X - 1 >= 0 && field.Cells[coordinates.X - 1, coordinates.Y].HasDeck)
-                || (coordinates.X + 1 < field.Cells.GetLength(0) && field.Cells[coordinates.X - 1, coordinates.Y].HasDeck);
+                || (coordinates.X + 1 < field.Dimension && field.Cells[coordinates.X + 1, coordinates.Y].HasDeck);
 
             if (shipIsPlacedHorizontally)
             {

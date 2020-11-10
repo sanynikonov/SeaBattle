@@ -36,9 +36,7 @@ namespace SeaBattle.Domain
             };
 
             var validPoints = potentialPoints.Where(
-                  p => p.X >= 0 && p.X < field.Dimension
-                    && p.Y >= 0 && p.Y < field.Dimension
-                    && !field.Cells[p.X, p.Y].IsOpened)
+                  p => p.IsInRange(0, field.Dimension) && !field.Cells[p.X, p.Y].IsOpened)
                 .ToArray();
 
             var index = random.Next(0, validPoints.Length);

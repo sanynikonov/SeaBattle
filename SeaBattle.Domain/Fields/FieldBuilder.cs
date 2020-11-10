@@ -56,12 +56,12 @@ namespace SeaBattle.Domain
             ThrowExceptionIfCoordinatesAreOutOfRange(first);
             ThrowExceptionIfCoordinatesAreOutOfRange(second);
 
-            if (first.X != second.X && first.Y != second.Y)
+            if (!first.IsHorizontalWith(second) && !first.IsVerticalWith(second))
             {
                 throw new FieldBuilderException("Arguments cause diagonal ship direction.");
             }
 
-            var shipLength = GetShipLength(first, second);
+            var shipLength = first.CountDistanceBetween(second);
 
             if (!Enum.TryParse<ShipType>(shipLength.ToString(), out var shipType))
             {
@@ -90,27 +90,12 @@ namespace SeaBattle.Domain
             availibleShipsToPlace[shipType]--;
         }
 
-        private static Point[] GetNeighbours(int x, int y)
-        {
-            return new Point[]
-            {
-                new Point(x - 1, y - 1),
-                new Point(x - 1, y),
-                new Point(x - 1, y + 1),
-                new Point(x, y - 1),
-                new Point(x, y + 1),
-                new Point(x + 1, y - 1),
-                new Point(x + 1, y),
-                new Point(x + 1, y + 1)
-            };
-        }
-
         private bool NeighbourCellsHaveDeck(Point first, Point second)
         {
             IEnumerable<Point> shipCoordinates;
-            var shipLength = GetShipLength(first, second);
+            var shipLength = first.CountDistanceBetween(second);
 
-            if (first.X == second.X)
+            if (first.IsHorizontalWith(second))
             {
                 shipCoordinates = Enumerable.Range(first.Y, shipLength).Select(y => new Point(first.X, y));
             }
@@ -125,7 +110,7 @@ namespace SeaBattle.Domain
         private bool NeighbourCellsHaveDeck(IEnumerable<Point> shipCoordinates)
         {
             return shipCoordinates
-                .Select(p => GetNeighbours(p.X, p.Y))
+                .Select(p => p.GetNeighbours())
                 .SelectMany(x => x)
                 .Any(p => p.X >= 0 && p.X < Result.Dimension
                         && p.Y >= 0 && p.Y < Result.Dimension
@@ -144,26 +129,19 @@ namespace SeaBattle.Domain
             return densityCoef > highestAvailibleDensityCoef;
         }
 
-        private static int GetShipLength(Point first, Point second)
-        {
-            return Math.Abs(second.X - first.X) != 0
-                ? Math.Abs(second.X - first.X) + 1
-                : Math.Abs(second.Y - first.Y) + 1;
-        }
-
         private List<Cell> GetCellsToPlaceShip(Point first, Point second)
         {
             var cells = new List<Cell>();
-            var shipLength = GetShipLength(first, second);
+            var shipLength = first.CountDistanceBetween(second);
 
-            if (first.X == second.X)
+            if (first.IsHorizontalWith(second))
             {
                 for (int i = 0; i < shipLength; i++)
                 {
                     cells.Add(Result.Cells[first.X, i]);
                 }
             }
-            else if (first.Y == second.Y)
+            else if (first.IsVerticalWith(second))
             {
                 for (int i = 0; i < shipLength; i++)
                 {
@@ -176,8 +154,7 @@ namespace SeaBattle.Domain
 
         private void ThrowExceptionIfCoordinatesAreOutOfRange(Point coordinates)
         {
-            if (coordinates.X < 0 || coordinates.X >= Result.Dimension ||
-                coordinates.Y < 0 || coordinates.Y >= Result.Dimension)
+            if (!coordinates.IsInRange(0, Result.Dimension))
             {
                 throw new FieldBuilderException("Coordinates are out of range.");
             }

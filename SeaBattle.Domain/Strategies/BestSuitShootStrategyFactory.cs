@@ -23,23 +23,18 @@ namespace SeaBattle.Domain
 
             foreach (var deck in wreckedDecks)
             {
-                if (wreckedDecks.Any(d => AreNeighbours(d, deck)))
+                if (wreckedDecks.Any(d => d.IsNeighbourTo(deck)))
                 {
                     var neighbourDeck = wreckedDecks
-                        .FirstOrDefault(d => AreNeighbours(d, deck));
+                        .FirstOrDefault(d => d.IsNeighbourTo(deck));
 
-                    var isHorizontalDirection = deck.X - neighbourDeck.X == 0;
+                    var isHorizontalDirection = deck.IsHorizontalWith(neighbourDeck);
 
                     return new CorrectDirectionShootStrategy(fieldService, deck, isHorizontalDirection);
                 }
             }
 
             return new ShootAroundWreckedShipStrategy(fieldService, wreckedDecks.First());
-        }
-
-        private bool AreNeighbours(Point first, Point second)
-        {
-            return Math.Abs(first.X - second.X) == 1 || Math.Abs(first.Y - second.Y) == 1;
         }
     }
 }
