@@ -9,7 +9,7 @@ namespace SeaBattle.Client
     public class ConsoleGameView
     {
         private readonly IGameBehaviour game;
-        private readonly BestSuitShootStrategyFactory strategyFactory = new BestSuitShootStrategyFactory();
+        private readonly BestSuitFindCellStrategyFactory strategyFactory = new BestSuitFindCellStrategyFactory();
 
 
         private const string Menu = "Actions:\n" +
@@ -49,7 +49,7 @@ namespace SeaBattle.Client
                         lastBoardStatus = game.MakeMove(point);
                         break;
                     case 2:
-                        var strategy = strategyFactory.GetShootStrategy(lastBoardStatus?.FirstFieldWoundedShipsCoordinates);
+                        var strategy = strategyFactory.GetFindCellStrategy(lastBoardStatus?.FirstFieldWoundedShipsCoordinates);
                         lastBoardStatus = game.MakeMove(strategy);
                         break;
                     default:
