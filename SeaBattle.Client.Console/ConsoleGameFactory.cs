@@ -8,9 +8,9 @@ namespace SeaBattle.Client
 {
     public class ConsoleGameFactory
     {
-        public GameService CreateGame(GameStartInfo startInfo)
+        public GameService CreateGame(GameStartInfo startInfo, IFieldService fieldService)
         {
-            var game = new EventBasedGameService(startInfo);
+            var game = new EventBasedGameService(startInfo, fieldService);
 
             game.GameStarted += PrintInvitation;
             game.GameStarted += PrintBoard;

@@ -35,9 +35,11 @@ namespace SeaBattle.Client
 
             //var gameInfo = preparationView.Run();
 
+            var fieldService = new FieldService();
+
             var gameFactory = new ConsoleGameFactory();
 
-            var game = gameFactory.CreateGame(gameInfo);
+            var game = gameFactory.CreateGame(gameInfo, fieldService);
 
             var gameView = new ConsoleGameView(game);
 
