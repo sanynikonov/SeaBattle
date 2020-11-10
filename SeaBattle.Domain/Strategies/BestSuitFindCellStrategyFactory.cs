@@ -5,20 +5,13 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public class BestSuitShootStrategyFactory
+    public class BestSuitFindCellStrategyFactory
     {
-        private readonly IFieldService fieldService;
-
-        public BestSuitShootStrategyFactory(IFieldService fieldService)
-        {
-            this.fieldService = fieldService;
-        }
-
-        public IShootStrategy GetShootStrategy(Point[] wreckedDecks)
+        public IFindCellStrategy GetFindCellStrategy(Point[] wreckedDecks)
         {
             if (wreckedDecks == null || !wreckedDecks.Any())
             {
-                return new RandomShootStrategy(fieldService);
+                return new RandomFindCellStrategy();
             }
 
             foreach (var deck in wreckedDecks)
@@ -30,11 +23,11 @@ namespace SeaBattle.Domain
 
                     var isHorizontalDirection = deck.IsHorizontalWith(neighbourDeck);
 
-                    return new CorrectDirectionShootStrategy(fieldService, deck, isHorizontalDirection);
+                    return new CorrectDirectionFindCellStrategy(deck, isHorizontalDirection);
                 }
             }
 
-            return new ShootAroundWreckedShipStrategy(fieldService, wreckedDecks.First());
+            return new FindCellAroundWreckedShipStrategy(wreckedDecks.First());
         }
     }
 }

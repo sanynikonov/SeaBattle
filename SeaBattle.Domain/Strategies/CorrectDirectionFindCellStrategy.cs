@@ -5,27 +5,18 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public class CorrectDirectionShootStrategy : IShootStrategy
+    public class CorrectDirectionFindCellStrategy : IFindCellStrategy
     {
         private readonly Point wreckedDeckCoordinates;
         private readonly bool shipIsSetHorizontally;
-        private readonly IFieldService fieldService;
 
-        public CorrectDirectionShootStrategy(IFieldService fieldService, Point wreckedDeckCoordinates, bool shipIsSetHorizontally)
+        public CorrectDirectionFindCellStrategy(Point wreckedDeckCoordinates, bool shipIsSetHorizontally)
         {
-            this.fieldService = fieldService;
             this.wreckedDeckCoordinates = wreckedDeckCoordinates;
             this.shipIsSetHorizontally = shipIsSetHorizontally;
         }
 
-        public void Shoot(Field field)
-        {
-            var coordinates = FindNeighbourCellToOpen(field);
-
-            fieldService.OpenCell(field, coordinates);
-        }
-
-        private Point FindNeighbourCellToOpen(Field field)
+        public Point FindCell(Field field)
         {
             var random = new Random();
 

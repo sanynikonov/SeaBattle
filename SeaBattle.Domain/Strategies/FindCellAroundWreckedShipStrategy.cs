@@ -5,25 +5,16 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public class ShootAroundWreckedShipStrategy : IShootStrategy
+    public class FindCellAroundWreckedShipStrategy : IFindCellStrategy
     {
         private readonly Point wreckedDeckCoordinates;
-        private readonly IFieldService fieldService;
 
-        public ShootAroundWreckedShipStrategy(IFieldService fieldService, Point wreckedDeckCoordinates)
+        public FindCellAroundWreckedShipStrategy(Point wreckedDeckCoordinates)
         {
-            this.fieldService = fieldService;
             this.wreckedDeckCoordinates = wreckedDeckCoordinates;
         }
 
-        public void Shoot(Field field)
-        {
-            var coordinates = FindNeighbourCellToOpen(field);
-
-            fieldService.OpenCell(field, coordinates);
-        }
-
-        private Point FindNeighbourCellToOpen(Field field)
+        public Point FindCell(Field field)
         {
             var random = new Random();
 

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public interface IShootStrategy
+    public interface IFindCellStrategy
     {
-        void Shoot(Field field);
+        Point FindCell(Field field);
     }
 }
