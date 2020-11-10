@@ -46,5 +46,10 @@ namespace SeaBattle.Domain
         {
             return first.X == second.X;
         }
+
+        public static bool IsNeighbourTo(this Point first, Point second)
+        {
+            return Math.Abs(first.X - second.X) == 1 || Math.Abs(first.Y - second.Y) == 1;
+        }
     }
 }
