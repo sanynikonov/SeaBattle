@@ -9,11 +9,15 @@ namespace SeaBattle.Domain
     {
         public Field GetFieldCopy(Field field)
         {
+            AssertIsNotNull(field);
+
             return field.Clone() as Field;
         }
 
         public void OpenCell(Field field, Point coordinates)
         {
+            AssertIsNotNull(field);
+
             if (coordinates.IsInRange(0, field.Dimension))
             {
                 throw new Exception("Coordinates out of range");
@@ -34,6 +38,8 @@ namespace SeaBattle.Domain
 
         public Point[] GetWreckedDecksOfDamagedShips(Field field)
         {
+            AssertIsNotNull(field);
+
             var ships = GetShipsCoordinates(field);
 
             var damagedButNotKilledShips = ships
@@ -178,6 +184,14 @@ namespace SeaBattle.Domain
             else
             {
                 return GetShipVertically(coordinates);
+            }
+        }
+
+        private void AssertIsNotNull(Field field)
+        {
+            if (field == null)
+            {
+                throw new ArgumentNullException(nameof(field));
             }
         }
     }
