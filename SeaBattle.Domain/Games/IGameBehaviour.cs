@@ -11,6 +11,6 @@ namespace SeaBattle.Domain
 
         void StartGame();
         BoardStatus MakeMove(Point coordinates);
-        BoardStatus MakeMove(IShootStrategy strategy);
+        BoardStatus MakeMove(IFindCellStrategy strategy);
     }
 }

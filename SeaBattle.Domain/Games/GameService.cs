@@ -56,32 +56,16 @@ namespace SeaBattle.Domain
             };
         }
 
-        public virtual BoardStatus MakeMove(IShootStrategy strategy)
+        public virtual BoardStatus MakeMove(IFindCellStrategy strategy)
         {
-            AssertGameStarted();
-            AssertGameIsNotEnded();
-
             if (strategy == null)
             {
                 throw new ArgumentNullException(nameof(strategy));
             }
 
-            strategy.Shoot(CurrentPlayerOppositeField);
-            
-            if (CheckGameEnd())
-            {
-                EndGame();
-            }
-            else
-            {
-                SwitchCurrentPlayer();
-            }
+            var coordinates = strategy.FindCell(CurrentPlayerOppositeField);
 
-            return new BoardStatus
-            {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(FirstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(SecondPlayerField)
-            };
+            return MakeMove(coordinates);
         }
 
         public virtual void StartGame()

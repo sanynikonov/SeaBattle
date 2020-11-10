@@ -36,7 +36,7 @@ namespace SeaBattle.Domain
             return status;
         }
 
-        public override BoardStatus MakeMove(IShootStrategy strategy)
+        public override BoardStatus MakeMove(IFindCellStrategy strategy)
         {
             var status = base.MakeMove(strategy);
 
