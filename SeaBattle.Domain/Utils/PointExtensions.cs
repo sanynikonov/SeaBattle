@@ -33,8 +33,8 @@ namespace SeaBattle.Domain
 
         public static bool IsInRange(this Point point, int min, int max)
         {
-            return point.X >= min && point.X < max &&
-                point.Y >= min || point.Y < max;
+            return point.X >= min && point.X < max
+                && point.Y >= min && point.Y < max;
         }
 
         public static bool IsVerticalWith(this Point first, Point second)
