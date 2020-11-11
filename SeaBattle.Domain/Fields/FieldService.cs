@@ -36,7 +36,7 @@ namespace SeaBattle.Domain
             }
         }
 
-        public Point[] GetWreckedDecksOfDamagedShips(Field field)
+        public Point[] GetDamagedShipsCheckedDecksCoordinates(Field field)
         {
             AssertIsNotNull(field);
 

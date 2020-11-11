@@ -51,8 +51,8 @@ namespace SeaBattle.Domain
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(FirstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetWreckedDecksOfDamagedShips(SecondPlayerField)
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(FirstPlayerField),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(SecondPlayerField)
             };
         }
 
