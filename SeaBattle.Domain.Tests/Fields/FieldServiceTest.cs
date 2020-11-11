@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -136,6 +137,34 @@ namespace SeaBattle.Domain.Tests.Fields
             //Assert.Collection(neigbours, c => Assert.True(c.IsOpened));
         }
 
+        [Fact]
+        public void GetDamagedShipsCheckedDecksCoordinates_OfNullField_ThrowsException()
+        {
+            Field field = null;
+
+            void action() => fieldService.GetDamagedShipsCheckedDecksCoordinates(field);
+
+            Assert.Throws<ArgumentNullException>(action);
+        }
+        
+        [Theory]
+        [ClassData(typeof(FieldServiceGetDamagedShipsCheckedDecksCoordinatesTestData))]
+        public void GetDamagedShipsCheckedDecksCoordinates_OfFieldWithShips_ReturnsArrayOfCoordinatesOfCheckedDecksOfShipsNotKilledYet
+            (int dimension, List<Point> shipsCoordinates, List<Point> checkedDecksCoordinates)
+        {
+            var expected = checkedDecksCoordinates;
+            var cells = InstantiateEmptyCellsArray(dimension);
+
+            shipsCoordinates.ForEach(p => cells[p.X, p.Y].HasDeck = true);
+            checkedDecksCoordinates.ForEach(p => cells[p.X, p.Y].IsOpened = true);
+
+            var field = new Field { Cells = cells };
+
+            var actual = fieldService.GetDamagedShipsCheckedDecksCoordinates(field);
+
+            Assert.Equal(expected, actual);
+        }
+
         private Cell[,] InstantiateEmptyCellsArray(int dimension)
         {
             var cells = new Cell[dimension, dimension];
@@ -162,5 +191,52 @@ namespace SeaBattle.Domain.Tests.Fields
                 }
             }
         }
+    }
+
+    public class FieldServiceGetDamagedShipsCheckedDecksCoordinatesTestData : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+                5,
+                new List<Point>(),
+                new List<Point>()
+            };
+
+            yield return new object[]
+            {
+                5,
+                new List<Point>
+                {
+                    new Point(2, 2),
+                    new Point(2, 1),
+                },
+                new List<Point>
+                {
+                    new Point(2, 1),
+                }
+            };
+
+            yield return new object[]
+            {
+                5,
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(0, 1),
+
+                    new Point(3, 3),
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(4, 3)
+                }
+            };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
