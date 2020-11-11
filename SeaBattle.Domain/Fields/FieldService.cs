@@ -18,7 +18,7 @@ namespace SeaBattle.Domain
         {
             AssertIsNotNull(field);
 
-            if (coordinates.IsInRange(0, field.Dimension))
+            if (!coordinates.IsInRange(0, field.Dimension))
             {
                 throw new Exception("Coordinates out of range");
             }
@@ -163,7 +163,7 @@ namespace SeaBattle.Domain
                 cells.Reverse();
                 cells.Add(field.Cells[coordinates.X, coordinates.Y]);
 
-                deltaY = coordinates.Y - 1;
+                deltaY = coordinates.Y + 1;
                 while (deltaY < field.Dimension && field.Cells[coordinates.X, deltaY].HasDeck)
                 {
                     cells.Add(field.Cells[coordinates.X, deltaY]);
