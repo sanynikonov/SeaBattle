@@ -77,10 +77,11 @@ namespace SeaBattle.Domain
                             : new Point(firstPoint.X, firstPoint.Y + shipLength));                    
 
                     var pointsToClaim = shipPoints
-                        .Select(p => GetPointWithNeighbours(p.X, p.Y))
+                        .Select(p => p.GetNeighbours())
                         .SelectMany(x => x)
                         .Distinct()
-                        .Where(p => p.X >= 0 && p.X < dimension && p.Y >= 0 && p.Y < dimension);
+                        .Where(p => p.X >= 0 && p.X < dimension && p.Y >= 0 && p.Y < dimension)
+                        .Concat(shipPoints);
 
                     foreach (var point in pointsToClaim)
                     {
@@ -93,22 +94,6 @@ namespace SeaBattle.Domain
             }
 
             return shipsPositions;
-        }
-
-        private static Point[] GetPointWithNeighbours(int x, int y)
-        {
-            return new Point[]
-            {
-                new Point(x - 1, y - 1),
-                new Point(x - 1, y),
-                new Point(x - 1, y + 1),
-                new Point(x, y - 1),
-                new Point(x, y),
-                new Point(x, y + 1),
-                new Point(x + 1, y - 1),
-                new Point(x + 1, y),
-                new Point(x + 1, y + 1)
-            };
         }
 
         private bool IsFirstPointValidToPlaceShip(Point point, ShipType shipType, bool isHorizontalDirection, bool[,] unavaliableToPlaceShip)
