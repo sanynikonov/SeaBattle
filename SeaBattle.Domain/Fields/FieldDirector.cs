@@ -52,19 +52,30 @@ namespace SeaBattle.Domain
             var random = new Random();
             var checkedPoints = new List<Point>();
 
+            List<Point> availiblePoints;
+            Point firstPoint;
+            bool isHorizontalDirection;
+
             var shipsPositions = new List<(Point first, Point second)>();
 
             foreach (var pair in shipStorage.OrderBy(x => (int)x.Key))
             {
                 for (int i = 0; i < pair.Value; i++)
                 {
-                    Point firstPoint;
-                    bool isHorizontalDirection;
+                    availiblePoints =
+                        Enumerable.Repeat(0, dimension)
+                            .Select(x =>
+                                Enumerable.Repeat(0, dimension)
+                                    .Select(y => new Point(x, y)))
+                            .SelectMany(x => x)
+                            .Where(p => !unavaliableToPlaceShip[p.X, p.Y])
+                            .ToList();
+
                     do
                     {
-                        firstPoint = new Point(random.Next(dimension), random.Next(dimension));
+                        firstPoint = availiblePoints[random.Next(availiblePoints.Count)];
                         isHorizontalDirection = random.Next(2) == 0;
-                        checkedPoints.Add(firstPoint);
+                        availiblePoints.Remove(firstPoint);
                     }
                     while (!IsFirstPointValidToPlaceShip(firstPoint, pair.Key, isHorizontalDirection, unavaliableToPlaceShip)
                         || checkedPoints.Contains(firstPoint));
@@ -89,7 +100,6 @@ namespace SeaBattle.Domain
                     }
 
                     shipsPositions.Add((firstPoint, shipPoints.Last()));
-                    checkedPoints.Clear();
                 }
             }
 
