@@ -150,13 +150,12 @@ namespace SeaBattle.Domain.Tests.Fields
         [Theory]
         [ClassData(typeof(FieldServiceGetDamagedShipsCheckedDecksCoordinatesTestData))]
         public void GetDamagedShipsCheckedDecksCoordinates_OfFieldWithShips_ReturnsArrayOfCoordinatesOfCheckedDecksOfShipsNotKilledYet
-            (int dimension, List<Point> shipsCoordinates, List<Point> checkedDecksCoordinates)
+            (int dimension, List<Point> shipsCoordinates, List<Point> openedDecksCoordinates, List<Point> expected)
         {
-            var expected = checkedDecksCoordinates;
             var cells = InstantiateEmptyCellsArray(dimension);
 
             shipsCoordinates.ForEach(p => cells[p.X, p.Y].HasDeck = true);
-            checkedDecksCoordinates.ForEach(p => cells[p.X, p.Y].IsOpened = true);
+            openedDecksCoordinates.ForEach(p => cells[p.X, p.Y].IsOpened = true);
 
             var field = new Field { Cells = cells };
 
@@ -201,6 +200,7 @@ namespace SeaBattle.Domain.Tests.Fields
             {
                 5,
                 new List<Point>(),
+                new List<Point>(),
                 new List<Point>()
             };
 
@@ -215,6 +215,51 @@ namespace SeaBattle.Domain.Tests.Fields
                 new List<Point>
                 {
                     new Point(2, 1),
+                },
+                new List<Point>
+                {
+                    new Point(2, 1),
+                }
+            };
+
+            yield return new object[]
+            {
+                5,
+                new List<Point>
+                {
+                    new Point(2, 2),
+                    new Point(2, 1),
+                },
+                new List<Point>
+                {
+                    new Point(2, 2),
+                    new Point(2, 1),
+                },
+                new List<Point>()
+            };
+
+            yield return new object[]
+            {
+                5,
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(0, 1),
+
+                    new Point(3, 3),
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(0, 0),
+
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(0, 0),
+
+                    new Point(4, 3)
                 }
             };
 
@@ -232,6 +277,40 @@ namespace SeaBattle.Domain.Tests.Fields
                 new List<Point>
                 {
                     new Point(0, 0),
+                    new Point(0, 1),
+
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(4, 3)
+                }
+            };
+
+            yield return new object[]
+            {
+                5,
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(0, 1),
+                    new Point(0, 2),
+
+                    new Point(3, 3),
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(0, 1),
+
+                    new Point(4, 3)
+                },
+                new List<Point>
+                {
+                    new Point(0, 0),
+                    new Point(0, 1),
+
                     new Point(4, 3)
                 }
             };
