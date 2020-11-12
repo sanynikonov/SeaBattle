@@ -9,6 +9,11 @@ namespace SeaBattle.Domain
     {
         public void BuildClassicField(IFieldBuilder fieldBuilder)
         {
+            if (fieldBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(fieldBuilder));
+            }
+
             var dimension = 10;
             var classicShipStorage =
                 new Dictionary<ShipType, int>
@@ -25,6 +30,11 @@ namespace SeaBattle.Domain
 
         public void SetShipsRandomly(IFieldBuilder fieldBuilder)
         {
+            if (fieldBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(fieldBuilder));
+            }
+
             var dimension = fieldBuilder.Result.Dimension;
             var shipStorage = fieldBuilder.Result.ShipsCount;
 
