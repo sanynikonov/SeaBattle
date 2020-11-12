@@ -47,5 +47,15 @@ namespace SeaBattle.Domain.Tests.Fields
 
             _mockFieldBuilder.Verify(builder => builder.SetShipsStorage(expected), Times.Once);
         }
+
+        [Fact]
+        public void SetShipsRandomly_WithNullFieldBuilder_ThrowsException()
+        {
+            IFieldBuilder fieldBuilder = null;
+
+            void action() => _fieldDirector.SetShipsRandomly(fieldBuilder);
+
+            Assert.Throws<ArgumentNullException>(action);
+        }
     }
 }
