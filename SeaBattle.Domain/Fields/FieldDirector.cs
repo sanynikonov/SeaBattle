@@ -80,7 +80,7 @@ namespace SeaBattle.Domain
                         .Select(p => p.GetNeighbours())
                         .SelectMany(x => x)
                         .Distinct()
-                        .Where(p => p.X >= 0 && p.X < dimension && p.Y >= 0 && p.Y < dimension)
+                        .Where(p => p.IsInRange(0, dimension))
                         .Concat(shipPoints);
 
                     foreach (var point in pointsToClaim)
