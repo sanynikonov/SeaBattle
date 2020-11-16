@@ -154,7 +154,8 @@ namespace SeaBattle.Domain
         {
             var random = new Random();
             var availiblePoints = new List<Point>(freePoints);
-            
+            var shipLength = (int)shipType;
+
             Point firstPoint;
             Point lastPoint;
 
@@ -169,28 +170,23 @@ namespace SeaBattle.Domain
                 }
 
                 randomIndex = random.Next(availiblePoints.Count);
-
                 firstPoint = availiblePoints[randomIndex];
+
                 isHorizontalDirection = random.Next(2) == 0;
+                lastPoint = isHorizontalDirection
+                    ? new Point(firstPoint.X, firstPoint.Y + shipLength - 1)
+                    : new Point(firstPoint.X + shipLength - 1, firstPoint.Y);
 
                 availiblePoints.Remove(firstPoint);
             }
-            while (FirstPointIsValidToPlaceShip(firstPoint, shipType, isHorizontalDirection, freePoints));
-
-            lastPoint = isHorizontalDirection
-                ? new Point(firstPoint.X, firstPoint.Y + (int)shipType)
-                : new Point(firstPoint.X + (int)shipType, firstPoint.Y);
+            while (!ShipPositionIsValid(firstPoint, lastPoint, freePoints));
 
             return (firstPoint, lastPoint);
         }
 
-        private bool FirstPointIsValidToPlaceShip(Point firstPoint, ShipType shipType, bool isHorizontalDirection, List<Point> freePoints)
+        private bool ShipPositionIsValid(Point firstPoint, Point lastPoint, List<Point> freePoints)
         {
-            var shipLength = (int)shipType;
-
-            var shipPoints = isHorizontalDirection
-                ? Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X, firstPoint.Y + i))
-                : Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X + i, firstPoint.Y));
+            var shipPoints = firstPoint.InclusiveRangeTo(lastPoint);
 
             return shipPoints.All(p => freePoints.Contains(p));
         }
