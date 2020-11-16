@@ -46,7 +46,7 @@ namespace SeaBattle.Domain
             {
                 for (int j = 0; j < dimension; j++)
                 {
-                    Result.Cells[i, j] = new Cell();
+                    Result.Cells[i, j] = new Cell { Coordinates = new Point(i, j) };
                 }
             }
         }
@@ -93,16 +93,8 @@ namespace SeaBattle.Domain
         private bool NeighbourCellsHaveDeck(Point first, Point second)
         {
             IEnumerable<Point> shipCoordinates;
-            var shipLength = first.CountDistanceBetween(second);
 
-            if (first.IsHorizontalWith(second))
-            {
-                shipCoordinates = Enumerable.Range(first.Y, shipLength).Select(y => new Point(first.X, y));
-            }
-            else
-            {
-                shipCoordinates = Enumerable.Range(first.X, shipLength).Select(x => new Point(x, first.Y));
-            }
+            shipCoordinates = first.InclusiveRangeTo(second);
 
             return NeighbourCellsHaveDeck(shipCoordinates);
         }
@@ -112,8 +104,7 @@ namespace SeaBattle.Domain
             return shipCoordinates
                 .Select(p => p.GetNeighbours())
                 .SelectMany(x => x)
-                .Any(p => p.X >= 0 && p.X < Result.Dimension
-                        && p.Y >= 0 && p.Y < Result.Dimension
+                .Any(p => p.IsInRange(0, Result.Dimension)
                         && Result.Cells[p.X, p.Y].HasDeck
                         && !shipCoordinates.Contains(p));
         }
@@ -131,6 +122,10 @@ namespace SeaBattle.Domain
 
         private List<Cell> GetCellsToPlaceShip(Point first, Point second)
         {
+            var points = first.InclusiveRangeTo(second);
+
+            return points.Select(p => Result.Cells[p.X, p.Y]).ToList();
+
             var cells = new List<Cell>();
             var shipLength = first.CountDistanceBetween(second);
 
