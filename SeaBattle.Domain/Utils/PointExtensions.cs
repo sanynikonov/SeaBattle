@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SeaBattle.Domain
@@ -22,6 +23,16 @@ namespace SeaBattle.Domain
                 new Point(x + 1, y),
                 new Point(x + 1, y + 1)
             };
+        }
+
+        public static IEnumerable<Point> InclusiveRangeTo(this Point first, Point second)
+        {
+            var isHorizontal = first.IsHorizontalWith(second);
+            var distanceRange = Enumerable.Range(0, first.CountDistanceBetween(second));
+
+            return isHorizontal
+                ? distanceRange.Select(i => new Point(first.X, first.Y + i))
+                : distanceRange.Select(i => new Point(first.X + i, first.Y));
         }
 
         public static int CountDistanceBetween(this Point first, Point second)
