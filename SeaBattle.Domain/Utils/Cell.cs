@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace SeaBattle.Domain
 {
+    [DebuggerDisplay("HasDeck: {HasDeck}; IsOpened: {IsOpened}")]
     public class Cell
     {
         internal bool HasDeck { get; set; } = false;

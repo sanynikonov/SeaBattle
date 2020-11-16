@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace SeaBattle.Domain
 {
+    [DebuggerDisplay("X: {X}; Y: {Y}")]
     public struct Point
     {
         public int X { get; set; }
