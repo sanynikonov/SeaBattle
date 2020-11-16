@@ -166,17 +166,17 @@ namespace SeaBattle.Domain
             }
 
             return shipsPositions;
+        }
 
-            bool FirstPointIsValidToPlaceShip(Point firstPoint, ShipType shipType, bool isHorizontalDirection, List<Point> freePoints)
-            {
-                var shipLength = (int)shipType;
+        private bool FirstPointIsValidToPlaceShip(Point firstPoint, ShipType shipType, bool isHorizontalDirection, List<Point> freePoints)
+        {
+            var shipLength = (int)shipType;
 
-                var shipPoints = isHorizontalDirection
-                    ? Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X, firstPoint.Y + i))
-                    : Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X + i, firstPoint.Y));
+            var shipPoints = isHorizontalDirection
+                ? Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X, firstPoint.Y + i))
+                : Enumerable.Range(0, shipLength).Select(i => new Point(firstPoint.X + i, firstPoint.Y));
 
-                return shipPoints.All(p => freePoints.Contains(p));
-            }
+            return shipPoints.All(p => freePoints.Contains(p));
         }
 
 
