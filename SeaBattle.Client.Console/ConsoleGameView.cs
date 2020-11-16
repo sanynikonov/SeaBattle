@@ -29,7 +29,7 @@ namespace SeaBattle.Client
 
             int answer = -1;
 
-            while (game.CurrentState != GameState.Ended || answer != 0)
+            while (game.CurrentState != GameState.Ended && answer != 0)
             {
                 Console.WriteLine($"{game.CurrentPlayer.Name}, it's your turn now!");
 
