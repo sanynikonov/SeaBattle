@@ -33,20 +33,6 @@ namespace SeaBattle.Domain
 
             if (shipIsSetHorizontally)
             {
-                int minX = wreckedDeckCoordinates.X - 1;
-                while (minX >= 0 && field.Cells[minX, wreckedDeckCoordinates.Y].IsOpened) minX--;
-
-                int maxX = wreckedDeckCoordinates.X + 1;
-                while (maxX < field.Dimension && field.Cells[maxX, wreckedDeckCoordinates.Y].IsOpened) maxX++;
-
-                potentialCoordinates = new[]
-                {
-                    new Point(minX, wreckedDeckCoordinates.Y),
-                    new Point(maxX, wreckedDeckCoordinates.Y),
-                };
-            }
-            else
-            {
                 int minY = wreckedDeckCoordinates.X - 1;
                 while (minY >= 0 && field.Cells[wreckedDeckCoordinates.X, minY].IsOpened) minY--;
 
@@ -59,8 +45,24 @@ namespace SeaBattle.Domain
                     new Point(wreckedDeckCoordinates.X, maxY),
                 };
             }
+            else
+            {
+                int minX = wreckedDeckCoordinates.X - 1;
+                while (minX >= 0 && field.Cells[minX, wreckedDeckCoordinates.Y].IsOpened) minX--;
 
-            return potentialCoordinates.Where(p => !field.Cells[p.X, p.Y].IsOpened).ToArray();
+                int maxX = wreckedDeckCoordinates.X + 1;
+                while (maxX < field.Dimension && field.Cells[maxX, wreckedDeckCoordinates.Y].IsOpened) maxX++;
+
+                potentialCoordinates = new[]
+                {
+                    new Point(minX, wreckedDeckCoordinates.Y),
+                    new Point(maxX, wreckedDeckCoordinates.Y),
+                };
+            }
+
+            return potentialCoordinates
+                .Where(p => p.IsInRange(0, field.Dimension) && !field.Cells[p.X, p.Y].IsOpened)
+                .ToArray();
         }
     }
 }
