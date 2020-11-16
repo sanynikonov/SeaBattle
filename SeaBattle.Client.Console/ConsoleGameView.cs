@@ -49,8 +49,8 @@ namespace SeaBattle.Client
                         break;
                     case 2:
                         var wreckedDecks = game.CurrentPlayer == game.FirstPlayer
-                            ? lastBoardStatus.SecondFieldWoundedShipsCoordinates
-                            : lastBoardStatus.FirstFieldWoundedShipsCoordinates;
+                            ? lastBoardStatus?.SecondFieldWoundedShipsCoordinates
+                            : lastBoardStatus?.FirstFieldWoundedShipsCoordinates;
                         var strategy = strategyFactory.GetFindCellStrategy(wreckedDecks);
                         lastBoardStatus = game.MakeMove(strategy);
                         break;
