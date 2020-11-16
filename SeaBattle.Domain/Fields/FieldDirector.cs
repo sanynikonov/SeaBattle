@@ -48,8 +48,6 @@ namespace SeaBattle.Domain
         
         private IEnumerable<(Point first, Point second)> GetRandomShipsPositions(int dimension, IReadOnlyDictionary<ShipType, int> shipStorage)
         {
-            var random = new Random();
-
             List<Point> freePoints = new List<Point>();
 
             for (int i = 0; i < dimension; i++)
