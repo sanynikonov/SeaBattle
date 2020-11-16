@@ -17,6 +17,7 @@ namespace SeaBattle.Client
 
             game.MoveWasMade += PrintBoard;
 
+            game.GameEnded += PrintBoard;
             game.GameEnded += PrintFinalSpeech;
 
             return game;
