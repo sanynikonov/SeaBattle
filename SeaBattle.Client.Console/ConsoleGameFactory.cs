@@ -89,7 +89,7 @@ namespace SeaBattle.Client
             var loser = sender.Winner == sender.FirstPlayer ? sender.SecondPlayer : sender.FirstPlayer;
 
             Console.WriteLine("Game is ended." +
-                $"\n{sender.Winner} destroyed all the ships of {loser.Name}'s squadron. Congratulations to the winner!" +
+                $"\n{sender.Winner.Name} destroyed all the ships of {loser.Name}'s squadron. Congratulations to the winner!" +
                 "\n");
 
             Console.WriteLine($"I hope you enjoyed this game and join it soon. See you next time!" +
