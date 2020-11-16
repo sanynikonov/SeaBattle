@@ -45,68 +45,8 @@ namespace SeaBattle.Domain
                 fieldBuilder.SetShip(first, second);
             }
         }
-
+        
         private IEnumerable<(Point first, Point second)> GetRandomShipsPositions(int dimension, IReadOnlyDictionary<ShipType, int> shipStorage)
-        {
-            var unavaliableToPlaceShip = new bool[dimension, dimension];
-            var random = new Random();
-            var checkedPoints = new List<Point>();
-
-            List<Point> availiblePoints;
-            Point firstPoint;
-            bool isHorizontalDirection;
-
-            var shipsPositions = new List<(Point first, Point second)>();
-
-            foreach (var pair in shipStorage.OrderBy(x => (int)x.Key))
-            {
-                for (int i = 0; i < pair.Value; i++)
-                {
-                    availiblePoints =
-                        Enumerable.Repeat(0, dimension)
-                            .Select(x =>
-                                Enumerable.Repeat(0, dimension)
-                                    .Select(y => new Point(x, y)))
-                            .SelectMany(x => x)
-                            .Where(p => !unavaliableToPlaceShip[p.X, p.Y])
-                            .ToList();
-
-                    do
-                    {
-                        firstPoint = availiblePoints[random.Next(availiblePoints.Count)];
-                        isHorizontalDirection = random.Next(2) == 0;
-                        availiblePoints.Remove(firstPoint);
-                    }
-                    while (!IsFirstPointValidToPlaceShip(firstPoint, pair.Key, isHorizontalDirection, unavaliableToPlaceShip)
-                        || checkedPoints.Contains(firstPoint));
-
-                    var shipLength = (int)pair.Key;
-
-                    var shipPoints = Enumerable.Range(0, shipLength)
-                        .Select(x => isHorizontalDirection
-                            ? new Point(firstPoint.X + shipLength, firstPoint.Y)
-                            : new Point(firstPoint.X, firstPoint.Y + shipLength));
-
-                    var pointsToClaim = shipPoints
-                        .Select(p => p.GetNeighbours())
-                        .SelectMany(x => x)
-                        .Distinct()
-                        .Where(p => p.IsInRange(0, dimension))
-                        .Concat(shipPoints);
-
-                    foreach (var point in pointsToClaim)
-                    {
-                        unavaliableToPlaceShip[point.X, point.Y] = true;
-                    }
-
-                    shipsPositions.Add((firstPoint, shipPoints.Last()));
-                }
-            }
-
-            return shipsPositions;
-        }
-
-        private IEnumerable<(Point first, Point second)> GetRandomShipsPositions1(int dimension, IReadOnlyDictionary<ShipType, int> shipStorage)
         {
             var random = new Random();
 
@@ -189,23 +129,6 @@ namespace SeaBattle.Domain
             var shipPoints = firstPoint.InclusiveRangeTo(lastPoint);
 
             return shipPoints.All(p => freePoints.Contains(p));
-        }
-
-
-        private bool IsFirstPointValidToPlaceShip(Point point, ShipType shipType, bool isHorizontalDirection, bool[,] unavaliableToPlaceShip)
-        {
-            var shipLength = (int)shipType;
-
-            for (int i = 0; i < shipLength; i++)
-            {
-                if ((isHorizontalDirection && !unavaliableToPlaceShip[point.X + i, point.Y]) ||
-                    (!isHorizontalDirection && !unavaliableToPlaceShip[point.X, point.Y + i]))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
