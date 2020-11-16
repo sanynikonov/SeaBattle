@@ -43,7 +43,10 @@ namespace SeaBattle.Domain
         {
             var status = base.MakeMove(strategy);
 
-            MoveWasMade?.Invoke(this, new GameEventArgs(status));
+            if (CurrentState != GameState.Ended)
+            {
+                MoveWasMade?.Invoke(this, new GameEventArgs(status));
+            }
 
             return status;
         }
