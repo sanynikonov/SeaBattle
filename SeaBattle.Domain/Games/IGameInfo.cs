@@ -9,8 +9,8 @@ namespace SeaBattle.Domain
         Player FirstPlayer { get; }
         Player SecondPlayer { get; }
 
-        Field FirstPlayerField { get; }
-        Field SecondPlayerField { get; }
+        Field FirstPlayerFieldCopy { get; }
+        Field SecondPlayerFieldCopy { get; }
 
         GameState CurrentState { get; }
         Player CurrentPlayer { get; }

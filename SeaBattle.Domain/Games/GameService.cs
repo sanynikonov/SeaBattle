@@ -11,14 +11,14 @@ namespace SeaBattle.Domain
         protected readonly Field firstPlayerField;
         protected readonly Field secondPlayerField;
 
-        private Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? SecondPlayerField : FirstPlayerField;
+        private Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondPlayerField : firstPlayerField;
 
         public GameState CurrentState { get; private set; } = GameState.NotStarted;
         public Player Winner { get; private set; }
         public Player CurrentPlayer { get; private set; }
 
-        public Field FirstPlayerField => fieldService.GetFieldCopy(firstPlayerField);
-        public Field SecondPlayerField => fieldService.GetFieldCopy(secondPlayerField);
+        public Field FirstPlayerFieldCopy => fieldService.GetFieldCopy(firstPlayerField);
+        public Field SecondPlayerFieldCopy => fieldService.GetFieldCopy(secondPlayerField);
 
         public Player FirstPlayer { get; private set; }
         public Player SecondPlayer { get; private set; }
@@ -51,8 +51,8 @@ namespace SeaBattle.Domain
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(FirstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(SecondPlayerField)
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(FirstPlayerFieldCopy),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(SecondPlayerFieldCopy)
             };
         }
 

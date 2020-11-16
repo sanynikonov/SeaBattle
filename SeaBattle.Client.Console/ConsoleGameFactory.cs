@@ -26,7 +26,7 @@ namespace SeaBattle.Client
         {
             var sb = new StringBuilder();
 
-            int dimension = sender.FirstPlayerField.Dimension;
+            int dimension = sender.FirstPlayerFieldCopy.Dimension;
 
             var domainRow = Enumerable.Range(0, dimension).Aggregate("", (tmp, x) => tmp + x);
 
@@ -36,11 +36,11 @@ namespace SeaBattle.Client
             {
                 sb.Append($"\t{i}|");
 
-                sb.Append(DrawFieldRow(sender.FirstPlayerField, i));
+                sb.Append(DrawFieldRow(sender.FirstPlayerFieldCopy, i));
 
                 sb.Append($"\t\t{i}|");
 
-                sb.Append(DrawFieldRow(sender.SecondPlayerField, i));
+                sb.Append(DrawFieldRow(sender.SecondPlayerFieldCopy, i));
 
                 sb.Append("\n");
             }
