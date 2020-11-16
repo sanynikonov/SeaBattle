@@ -8,7 +8,7 @@ namespace SeaBattle.Client
 {
     public class ConsoleGameView
     {
-        private readonly IGameBehaviour game;
+        private readonly GameService game;
         private readonly BestSuitFindCellStrategyFactory strategyFactory = new BestSuitFindCellStrategyFactory();
 
 
@@ -18,7 +18,7 @@ namespace SeaBattle.Client
             "\n\t2 - make auto move" +
             "\n";
 
-        public ConsoleGameView(IGameBehaviour game)
+        public ConsoleGameView(GameService game)
         {
             this.game = game;
         }
@@ -28,6 +28,7 @@ namespace SeaBattle.Client
             game.StartGame();
 
             int answer = -1;
+            BoardStatus lastBoardStatus = null;
 
             while (game.CurrentState != GameState.Ended && answer != 0)
             {
@@ -36,8 +37,6 @@ namespace SeaBattle.Client
                 Console.WriteLine(Menu);
                 Console.WriteLine("Your choice");
                 answer = GetIntAnswer();
-
-                BoardStatus lastBoardStatus = null;
 
                 switch (answer)
                 {
@@ -49,7 +48,10 @@ namespace SeaBattle.Client
                         lastBoardStatus = game.MakeMove(point);
                         break;
                     case 2:
-                        var strategy = strategyFactory.GetFindCellStrategy(lastBoardStatus?.FirstFieldWoundedShipsCoordinates);
+                        var wreckedDecks = game.CurrentPlayer == game.FirstPlayer
+                            ? lastBoardStatus.SecondFieldWoundedShipsCoordinates
+                            : lastBoardStatus.FirstFieldWoundedShipsCoordinates;
+                        var strategy = strategyFactory.GetFindCellStrategy(wreckedDecks);
                         lastBoardStatus = game.MakeMove(strategy);
                         break;
                     default:
