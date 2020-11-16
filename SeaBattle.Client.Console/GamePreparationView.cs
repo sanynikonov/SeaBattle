@@ -8,11 +8,11 @@ namespace SeaBattle.Client
 {
     public class GamePreparationView
     {
-        private readonly IFieldBuilder fieldBuilder;
+        private readonly IFieldBuilder _fieldBuilder;
 
         public GamePreparationView(IFieldBuilder fieldBuilder)
         {
-            this.fieldBuilder = fieldBuilder;
+            _fieldBuilder = fieldBuilder;
         }
 
         public GameStartInfo Run()
@@ -34,7 +34,7 @@ namespace SeaBattle.Client
             var answer = Console.ReadLine();
             if (answer == "n")
             {
-                fieldDirector.BuildClassicField(fieldBuilder);
+                fieldDirector.BuildClassicField(_fieldBuilder);
             }
             else
             {
@@ -44,12 +44,12 @@ namespace SeaBattle.Client
             }
 
             SetShipsForPlayer(firstPlayerName, fieldDirector);
-            firstField = fieldBuilder.Result;
+            firstField = _fieldBuilder.Result;
 
             ResetBuilderForSecondField();
 
             SetShipsForPlayer(secondPlayerName, fieldDirector);
-            secondField = fieldBuilder.Result;
+            secondField = _fieldBuilder.Result;
 
             return new GameStartInfo
             (
@@ -64,27 +64,26 @@ namespace SeaBattle.Client
         {
             Console.WriteLine($"{firstPlayerName}, would you like to set ships manually? If not, you may start with random ships placement. (y/n)");
             var answer = Console.ReadLine();
-            Field field;
 
             if (answer == "n")
             {
-                fieldDirector.SetShipsRandomly(fieldBuilder);
+                fieldDirector.SetShipsRandomly(_fieldBuilder);
             }
             else
             {
-                var shipsCount = fieldBuilder.Result.ShipsCount.Select(x => x.Value).Count();
+                var shipsCount = _fieldBuilder.Result.ShipsCount.Select(x => x.Value).Count();
                 SetShips(firstPlayerName, shipsCount);
             }
         }
 
         private void ResetBuilderForSecondField()
         {
-            var dimension = fieldBuilder.Result.Dimension;
-            var shipsStorage = fieldBuilder.Result.ShipsCount;
+            var dimension = _fieldBuilder.Result.Dimension;
+            var shipsStorage = _fieldBuilder.Result.ShipsCount;
 
-            fieldBuilder.Reset();
-            fieldBuilder.SetDimension(dimension);
-            fieldBuilder.SetShipsStorage(new Dictionary<ShipType, int>(shipsStorage));
+            _fieldBuilder.Reset();
+            _fieldBuilder.SetDimension(dimension);
+            _fieldBuilder.SetShipsStorage(new Dictionary<ShipType, int>(shipsStorage));
         }
 
         private void PrintInvitation()
@@ -108,7 +107,7 @@ namespace SeaBattle.Client
         {
             try
             {
-                fieldBuilder.SetDimension(dimension);
+                _fieldBuilder.SetDimension(dimension);
             }
             catch
             {
@@ -143,7 +142,7 @@ namespace SeaBattle.Client
         {
             try
             {
-                fieldBuilder.SetShipsStorage(shipsStorage);
+                _fieldBuilder.SetShipsStorage(shipsStorage);
             }
             catch
             {
@@ -178,7 +177,7 @@ namespace SeaBattle.Client
         {
             try
             {
-                fieldBuilder.SetShip(first, last);
+                _fieldBuilder.SetShip(first, last);
             }
             catch
             {
