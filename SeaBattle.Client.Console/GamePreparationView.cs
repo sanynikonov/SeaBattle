@@ -60,9 +60,9 @@ namespace SeaBattle.Client
             );
         }
 
-        private void SetShipsForPlayer(string firstPlayerName, FieldDirector fieldDirector)
+        private void SetShipsForPlayer(string playerName, FieldDirector fieldDirector)
         {
-            Console.WriteLine($"{firstPlayerName}, would you like to set ships manually? If not, you may start with random ships placement. (y/n)");
+            Console.WriteLine($"{playerName}, would you like to set ships manually? If not, you may start with random ships placement. (y/n)");
             var answer = Console.ReadLine();
 
             if (answer == "n")
@@ -72,7 +72,7 @@ namespace SeaBattle.Client
             else
             {
                 var shipsCount = _fieldBuilder.Result.ShipsCount.Select(x => x.Value).Count();
-                SetShips(firstPlayerName, shipsCount);
+                SetShips(playerName, shipsCount);
             }
         }
 
