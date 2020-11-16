@@ -35,5 +35,10 @@ namespace SeaBattle.Domain
             
             return X == point.X && Y == point.Y;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
+        }
     }
 }
