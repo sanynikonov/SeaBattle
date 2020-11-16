@@ -28,9 +28,9 @@ namespace SeaBattle.Domain
                 throw new FieldBuilderException("Passed ships amount will cause too big ships density.");
             }
 
-            availibleShipsToPlace = shipsAmount;
+            availibleShipsToPlace = new Dictionary<ShipType, int>(shipsAmount);
 
-            Result.ShipsCount = shipsAmount;
+            Result.ShipsCount = new Dictionary<ShipType, int>(shipsAmount);
         }
 
         public void SetDimension(int dimension)
@@ -125,26 +125,6 @@ namespace SeaBattle.Domain
             var points = first.InclusiveRangeTo(second);
 
             return points.Select(p => Result.Cells[p.X, p.Y]).ToList();
-
-            var cells = new List<Cell>();
-            var shipLength = first.CountDistanceBetween(second);
-
-            if (first.IsHorizontalWith(second))
-            {
-                for (int i = 0; i < shipLength; i++)
-                {
-                    cells.Add(Result.Cells[first.X, i]);
-                }
-            }
-            else if (first.IsVerticalWith(second))
-            {
-                for (int i = 0; i < shipLength; i++)
-                {
-                    cells.Add(Result.Cells[i, first.Y]);
-                }
-            }
-
-            return cells.ToList();
         }
 
         private void ThrowExceptionIfCoordinatesAreOutOfRange(Point coordinates)
