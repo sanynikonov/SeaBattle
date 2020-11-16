@@ -33,10 +33,10 @@ namespace SeaBattle.Domain
 
             if (shipIsSetHorizontally)
             {
-                int minY = wreckedDeckCoordinates.X - 1;
+                int minY = wreckedDeckCoordinates.Y - 1;
                 while (minY >= 0 && field.Cells[wreckedDeckCoordinates.X, minY].IsOpened) minY--;
 
-                int maxY = wreckedDeckCoordinates.X + 1;
+                int maxY = wreckedDeckCoordinates.Y + 1;
                 while (maxY < field.Dimension && field.Cells[wreckedDeckCoordinates.X, maxY].IsOpened) maxY++;
 
                 potentialCoordinates = new[]
