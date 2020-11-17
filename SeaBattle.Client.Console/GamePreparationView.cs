@@ -106,9 +106,9 @@ namespace SeaBattle.Client
             {
                 _fieldBuilder.SetDimension(dimension);
             }
-            catch
+            catch (FieldBuilderException e)
             {
-                Console.WriteLine("Set another dimension.");
+                Console.WriteLine(e.Message);
                 return false;
             }
 
@@ -141,9 +141,9 @@ namespace SeaBattle.Client
             {
                 _fieldBuilder.SetShipsStorage(shipsStorage);
             }
-            catch
+            catch (FieldBuilderException e)
             {
-                Console.WriteLine("Set another ship storage.");
+                Console.WriteLine(e.Message);
                 return false;
             }
 
@@ -176,9 +176,9 @@ namespace SeaBattle.Client
             {
                 _fieldBuilder.SetShip(first, last);
             }
-            catch
+            catch (FieldBuilderException e)
             {
-                Console.WriteLine("Unable to set this ship. Set another.");
+                Console.WriteLine(e.Message);
                 return false;
             }
 
