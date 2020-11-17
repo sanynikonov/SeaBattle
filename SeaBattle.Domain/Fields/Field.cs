@@ -19,7 +19,12 @@ namespace SeaBattle.Domain
             {
                 for (int j = 0; j < Dimension; j++)
                 {
-                    copy.Cells[i, j] = new Cell { IsOpened = Cells[i, j].IsOpened, HasDeck = Cells[i, j].HasDeck };
+                    copy.Cells[i, j] = new Cell 
+                    {
+                        IsOpened = Cells[i, j].IsOpened,
+                        HasDeck = Cells[i, j].HasDeck,
+                        Coordinates = Cells[i, j].Coordinates
+                    };
                 }
             }
 
