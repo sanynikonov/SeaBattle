@@ -47,7 +47,7 @@ namespace SeaBattle.Domain.Tests.Games
 
             void action() => _gameService.StartGame();
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<GameServiceException>(action);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace SeaBattle.Domain.Tests.Games
 
             void action() => _gameService.StartGame();
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<GameServiceException>(action);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace SeaBattle.Domain.Tests.Games
 
             void action() => _gameService.MakeMove(coordinates);
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<GameServiceException>(action);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace SeaBattle.Domain.Tests.Games
 
             void action() => _gameService.MakeMove(coordinates);
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<GameServiceException>(action);
         }
 
         [Fact]

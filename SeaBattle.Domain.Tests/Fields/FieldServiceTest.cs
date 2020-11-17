@@ -59,7 +59,7 @@ namespace SeaBattle.Domain.Tests.Fields
 
             void action() => fieldService.OpenCell(field, coordinates);
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<FieldServiceException>(action);
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace SeaBattle.Domain.Tests.Fields
 
             void action() => fieldService.OpenCell(field, coordinates);
 
-            Assert.Throws<Exception>(action);
+            Assert.Throws<FieldServiceException>(action);
         }
 
         [Theory]
