@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public class GameService : IGameBehaviour, IGameInfo
+    public class GameService : IGameService
     {
         protected readonly IFieldService fieldService;
         protected readonly Field firstPlayerField;
@@ -51,8 +51,8 @@ namespace SeaBattle.Domain
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(FirstPlayerFieldCopy),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(SecondPlayerFieldCopy)
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(firstPlayerField),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(secondPlayerField)
             };
         }
 
