@@ -104,7 +104,7 @@ namespace SeaBattle.Domain
             {
                 if (!availiblePoints.Any())
                 {
-                    throw new Exception($"Director couldn't find appropriate place for the ship of type {shipType}");
+                    throw new FieldDirectorException($"Director couldn't find appropriate place for the ship of type {shipType}");
                 }
 
                 randomIndex = random.Next(availiblePoints.Count);

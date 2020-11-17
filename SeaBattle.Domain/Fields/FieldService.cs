@@ -20,12 +20,12 @@ namespace SeaBattle.Domain
 
             if (!coordinates.IsInRange(0, field.Dimension))
             {
-                throw new Exception("Coordinates out of range");
+                throw new FieldServiceException("Coordinates out of range");
             }
 
             if (field.Cells[coordinates.X, coordinates.Y].IsOpened)
             {
-                throw new Exception("Cell is already opened");
+                throw new FieldServiceException("Cell is already opened");
             }
 
             field.Cells[coordinates.X, coordinates.Y].IsOpened = true;

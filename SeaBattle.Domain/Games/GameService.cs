@@ -74,7 +74,7 @@ namespace SeaBattle.Domain
 
             if (CurrentState == GameState.Started)
             {
-                throw new Exception("Game is already started.");
+                throw new GameServiceException("Game is already started.");
             }
 
             CurrentState = GameState.Started;
@@ -105,7 +105,7 @@ namespace SeaBattle.Domain
         {
             if (CurrentState == GameState.Ended)
             {
-                throw new Exception("Game is already ended.");
+                throw new GameServiceException("Game is already ended.");
             }
         }
 
@@ -113,7 +113,7 @@ namespace SeaBattle.Domain
         {
             if (CurrentState != GameState.Started)
             {
-                throw new Exception("Game is not started yet.");
+                throw new GameServiceException("Game is not started yet.");
             }
         }
     }
