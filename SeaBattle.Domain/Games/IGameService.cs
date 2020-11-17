@@ -4,9 +4,16 @@ using System.Text;
 
 namespace SeaBattle.Domain
 {
-    public interface IGameBehaviour
+    public interface IGameService
     {
+        Player FirstPlayer { get; }
+        Player SecondPlayer { get; }
+
+        Field FirstPlayerFieldCopy { get; }
+        Field SecondPlayerFieldCopy { get; }
+
         Player CurrentPlayer { get; }
+        Player Winner { get; }
         GameState CurrentState { get; }
 
         void StartGame();
