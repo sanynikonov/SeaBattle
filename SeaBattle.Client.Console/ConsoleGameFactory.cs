@@ -29,7 +29,7 @@ namespace SeaBattle.Client
 
             int dimension = sender.FirstPlayerFieldCopy.Dimension;
 
-            var domainRow = Enumerable.Range(0, dimension).Aggregate("", (tmp, x) => tmp + x);
+            var domainRow = Enumerable.Range(0, dimension).Aggregate("", (tmp, x) => $"{tmp} {x}");
 
             sb.Append("\t  " + domainRow + "\t\t  " + domainRow + "\n");
 
@@ -55,6 +55,8 @@ namespace SeaBattle.Client
 
             for (int column = 0; column < field.Dimension; column++)
             {
+                builder.Append(" ");
+                
                 switch (field.Cells[row, column].CurrentState)
                 {
                     case CellState.Closed:
