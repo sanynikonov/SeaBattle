@@ -11,7 +11,6 @@ namespace SeaBattle.Client
         private readonly GameService game;
         private readonly BestSuitFindCellStrategyFactory strategyFactory = new BestSuitFindCellStrategyFactory();
 
-
         private const string Menu = "Actions:\n" +
             "\n\t0 - exit" +
             "\n\t1 - make move" +
@@ -36,7 +35,7 @@ namespace SeaBattle.Client
 
                 Console.WriteLine(Menu);
                 Console.WriteLine("Your choice");
-                answer = GetIntAnswer();
+                answer = ConsoleHelper.GetIntAnswer();
 
                 switch (answer)
                 {
@@ -44,15 +43,10 @@ namespace SeaBattle.Client
                         Console.WriteLine("Are you sure you want to live...");
                         return;
                     case 1:
-                        var point = GetPointAnswer();
-                        lastBoardStatus = game.MakeMove(point);
+                        lastBoardStatus = MakeMove();
                         break;
                     case 2:
-                        var wreckedDecks = game.CurrentPlayer == game.FirstPlayer
-                            ? lastBoardStatus?.SecondFieldWoundedShipsCoordinates
-                            : lastBoardStatus?.FirstFieldWoundedShipsCoordinates;
-                        var strategy = strategyFactory.GetFindCellStrategy(wreckedDecks);
-                        lastBoardStatus = game.MakeMove(strategy);
+                        lastBoardStatus = MakeMove(lastBoardStatus);
                         break;
                     default:
                         Console.WriteLine("Unknown answer.");
@@ -61,35 +55,21 @@ namespace SeaBattle.Client
             }
         }
 
-        private int GetIntAnswer()
+        private BoardStatus MakeMove(BoardStatus lastBoardStatus)
         {
-            string answer;
-            int dimension;
-            do
-            {
-                answer = Console.ReadLine();
-            }
-            while (!int.TryParse(answer, out dimension));
+            var wreckedDecks = game.CurrentPlayer == game.FirstPlayer
+                ? lastBoardStatus?.SecondFieldWoundedShipsCoordinates
+                : lastBoardStatus?.FirstFieldWoundedShipsCoordinates;
 
-            return dimension;
+            var strategy = strategyFactory.GetFindCellStrategy(wreckedDecks);
+
+            return game.MakeMove(strategy);
         }
 
-        private Point GetPointAnswer()
+        private BoardStatus MakeMove()
         {
-            string[] numbers;
-
-            do
-            {
-                Console.WriteLine("Write two numbers separated by space: " +
-                    "coordinates of the point to open:");
-
-                numbers = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            }
-            while (numbers.Length != 2 || numbers.Any(x => !int.TryParse(x, out _)));
-
-            var result = numbers.Select(x => Convert.ToInt32(x)).ToArray();
-
-            return new Point(result[0], result[1]);
+            var point = ConsoleHelper.GetPointAnswer();
+            return game.MakeMove(point);
         }
     }
 }

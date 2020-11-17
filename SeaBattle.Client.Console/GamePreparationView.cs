@@ -17,9 +17,6 @@ namespace SeaBattle.Client
 
         public GameStartInfo Run()
         {
-            Field firstField;
-            Field secondField;
-
             Console.WriteLine("Hello! Welcome to the 'Sea Battle 1.0.0'");
 
             Console.WriteLine("Enter first player name:");
@@ -29,7 +26,28 @@ namespace SeaBattle.Client
             var secondPlayerName = Console.ReadLine();
 
             var fieldDirector = new FieldDirector();
+            
+            CreateBaseFieldSettings(fieldDirector);
 
+            SetShipsForPlayer(firstPlayerName, fieldDirector);
+            var firstField = _fieldBuilder.Result;
+
+            ResetBuilderForSecondField();
+
+            SetShipsForPlayer(secondPlayerName, fieldDirector);
+            var secondField = _fieldBuilder.Result;
+
+            return new GameStartInfo
+            (
+                new Player { Name = firstPlayerName },
+                new Player { Name = secondPlayerName },
+                firstField,
+                secondField
+            );
+        }
+
+        private void CreateBaseFieldSettings(FieldDirector fieldDirector)
+        {
             Console.WriteLine("Would you like to configure game settings? If not, you may play with classic game settings. (y/n)");
             var answer = Console.ReadLine();
             if (answer == "n")
@@ -42,22 +60,6 @@ namespace SeaBattle.Client
                 CreateFieldDimension();
                 CreateShipsStorage();
             }
-
-            SetShipsForPlayer(firstPlayerName, fieldDirector);
-            firstField = _fieldBuilder.Result;
-
-            ResetBuilderForSecondField();
-
-            SetShipsForPlayer(secondPlayerName, fieldDirector);
-            secondField = _fieldBuilder.Result;
-
-            return new GameStartInfo
-            (
-                new Player { Name = firstPlayerName },
-                new Player { Name = secondPlayerName },
-                firstField,
-                secondField
-            );
         }
 
         private void SetShipsForPlayer(string playerName, FieldDirector fieldDirector)
@@ -86,11 +88,6 @@ namespace SeaBattle.Client
             _fieldBuilder.SetShipsStorage(new Dictionary<ShipType, int>(shipsStorage));
         }
 
-        private void PrintInvitation()
-        {
-
-        }
-
         private void CreateFieldDimension()
         {
             Console.WriteLine("Choose field dimension:");
@@ -98,7 +95,7 @@ namespace SeaBattle.Client
             int dimension;
             do
             {
-                dimension = GetIntAnswer();
+                dimension = ConsoleHelper.GetIntAnswer();
             }
             while (!TrySetDimension(dimension));
         }
@@ -131,7 +128,7 @@ namespace SeaBattle.Client
                 foreach (var shipType in shipTypes)
                 {
                     Console.WriteLine($"Choose how many {shipType}s you want to have on the board:");
-                    count = GetIntAnswer();
+                    count = ConsoleHelper.GetIntAnswer();
                     shipsStorage.Add(shipType, count);
                 }
             }
@@ -165,7 +162,7 @@ namespace SeaBattle.Client
                 {
                     Console.WriteLine("Set ship.");
 
-                    (first, last) = GetShipPositionAnswer();
+                    (first, last) = ConsoleHelper.GetShipPositionAnswer();
                 }
                 while (!TrySetShip(first, last));
 
@@ -186,37 +183,6 @@ namespace SeaBattle.Client
             }
 
             return true;
-        }
-
-        private int GetIntAnswer()
-        {
-            string answer;
-            int dimension;
-            do
-            {
-                answer = Console.ReadLine();
-            }
-            while (!int.TryParse(answer, out dimension));
-
-            return dimension;
-        }
-
-        private (Point first, Point last) GetShipPositionAnswer()
-        {
-            string[] numbers;
-
-            do
-            {
-                Console.WriteLine("Write four numbers separated by space: " +
-                    "two for coordinates of first ship point and two for last:");
-
-                numbers = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            }
-            while (numbers.Length != 4 || numbers.Any(x => !int.TryParse(x, out _)));
-
-            var result = numbers.Select(x => Convert.ToInt32(x)).ToArray();
-
-            return (new Point(result[0], result[1]), new Point(result[2], result[3]));
         }
     }
 }
