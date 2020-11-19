@@ -31,7 +31,14 @@ namespace SeaBattle.Client
 
             var domainRow = Enumerable.Range(0, dimension).Aggregate("", (tmp, x) => $"{tmp} {x}");
 
-            sb.Append("\t  " + domainRow + "\t\t  " + domainRow + "\n");
+            var difference = domainRow.Length - sender.FirstPlayer.Name.Length;
+
+            var freeSpaceBetweenPlayerNames = difference > 0 ? new string(' ', difference) : "";
+            var freeSpaceBetweenFields = difference < 0 ? new string(' ', -difference) : "";
+
+            sb.Append("\t" + sender.FirstPlayer.Name + freeSpaceBetweenPlayerNames + "\t\t" + sender.SecondPlayer.Name + "\n\n");
+
+            sb.Append("\t  " + domainRow + freeSpaceBetweenFields + "\t\t  " + domainRow + "\n");
 
             for (int i = 0; i < dimension; i++)
             {
@@ -39,7 +46,7 @@ namespace SeaBattle.Client
 
                 sb.Append(DrawFieldRow(sender.FirstPlayerFieldCopy, i));
 
-                sb.Append($"\t\t{i}|");
+                sb.Append($"{freeSpaceBetweenFields}\t\t{i}|");
 
                 sb.Append(DrawFieldRow(sender.SecondPlayerFieldCopy, i));
 
