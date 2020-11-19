@@ -63,7 +63,7 @@ namespace SeaBattle.Domain
             Point firstPoint;
             Point lastPoint;
 
-            var ships = shipStorage.SelectMany(x => Enumerable.Repeat(x.Key, x.Value));
+            var ships = shipStorage.SelectMany(x => Enumerable.Repeat(x.Key, x.Value)).OrderByDescending(x => x);
             
             foreach (var shipType in ships)
             {
