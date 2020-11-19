@@ -39,18 +39,6 @@ namespace SeaBattle.Domain
             return status;
         }
 
-        public override BoardStatus MakeMove(IFindCellStrategy strategy)
-        {
-            var status = base.MakeMove(strategy);
-
-            if (CurrentState != GameState.Ended)
-            {
-                MoveWasMade?.Invoke(this, new GameEventArgs(status));
-            }
-
-            return status;
-        }
-
         protected override void EndGame()
         {
             base.EndGame();
