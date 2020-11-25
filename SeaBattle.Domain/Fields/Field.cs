@@ -30,5 +30,9 @@ namespace SeaBattle.Domain
 
             return copy;
         }
+
+        public Field CloneField() {
+            return Clone() as Field;
+        }
     }
 }

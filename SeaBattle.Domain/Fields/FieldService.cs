@@ -7,12 +7,13 @@ namespace SeaBattle.Domain
 {
     public class FieldService : IFieldService
     {
-        public Field GetFieldCopy(Field field)
-        {
-            AssertIsNotNull(field);
+        // Этот метод нам нахуй не нужен здесь. Перенес его в класс Field
+        // public Field GetFieldCopy(Field field)
+        // {
+        //     AssertIsNotNull(field);
 
-            return field.Clone() as Field;
-        }
+        //     return field.Clone() as Field;
+        // }  
 
         public void OpenCell(Field field, Point coordinates)
         {
@@ -40,12 +41,16 @@ namespace SeaBattle.Domain
         {
             AssertIsNotNull(field);
 
-            var ships = GetShipsCoordinates(field);
+            // var ships = GetShipsCoordinates(field);
+            var shipCells = GetShipsCoordinates(field);
 
-            var damagedButNotKilledShips = ships
+            // var damagedButNotKilledShips = shipCoordinates
+            //     .Where(ship => ship.Any(deck => deck.IsOpened) && ship.Any(deck => !deck.IsOpened));
+
+            var damagedButNotKilledShipCells = shipCells
                 .Where(ship => ship.Any(deck => deck.IsOpened) && ship.Any(deck => !deck.IsOpened));
 
-            var damagedDecks = damagedButNotKilledShips
+            var damagedDecks = damagedButNotKilledShipCells
                 .SelectMany(x => x)
                 .Where(x => x.CurrentState == CellState.OpenedWithDeck);
 
@@ -74,7 +79,8 @@ namespace SeaBattle.Domain
 
         private void OpenCellsNearDestroyedShip(Field field, Point coordinates)
         {
-            var shipCells = GetShipCells(field, coordinates).ToList();
+            //var shipCells = GetShipCells(field, coordinates).ToList();
+            var shipCells = GetShipCells(field, coordinates);
 
             var cellsCoordinates = GetCellsCoordinates(field, shipCells);
 

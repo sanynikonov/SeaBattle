@@ -39,10 +39,8 @@ namespace SeaBattle.Client
 
             return new GameStartInfo
             (
-                new Player { Name = firstPlayerName },
-                new Player { Name = secondPlayerName },
-                firstField,
-                secondField
+                new Player { Name = firstPlayerName, Field = firstField },
+                new Player { Name = secondPlayerName, Field = secondField }
             );
         }
 

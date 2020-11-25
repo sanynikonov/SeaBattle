@@ -20,8 +20,8 @@ namespace SeaBattle.Domain
 
             var status = new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(firstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(secondPlayerField),
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.FirstPlayer.Field),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.SecondPlayer.Field),
             };
 
             GameStarted?.Invoke(this, new GameEventArgs(status));
@@ -31,7 +31,7 @@ namespace SeaBattle.Domain
         {
             var status = base.MakeMove(coordinates);
 
-            if (CurrentState != GameState.Ended)
+            if (GameStateHolder.Instance.CurrentState != GameState.Ended)
             {
                 MoveWasMade?.Invoke(this, new GameEventArgs(status));
             }
@@ -45,8 +45,8 @@ namespace SeaBattle.Domain
 
             var status = new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(firstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(secondPlayerField),
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.FirstPlayer.Field),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.SecondPlayer.Field),
             };
 
             GameEnded?.Invoke(this, new GameEventArgs(status));

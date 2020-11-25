@@ -17,7 +17,7 @@ namespace SeaBattle.Domain.Tests.Fields
         {
             Field field = null;
 
-            void action() => fieldService.GetFieldCopy(field);
+            void action() => field.CloneField(); // fieldService.GetFieldCopy(field);
 
             Assert.Throws<ArgumentNullException>(action);
         }
