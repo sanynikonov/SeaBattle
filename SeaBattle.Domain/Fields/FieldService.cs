@@ -7,7 +7,7 @@ namespace SeaBattle.Domain
 {
     public class FieldService : IFieldService
     {
-        // Этот метод нам нахуй не нужен здесь. Перенес его в класс Field
+        // Этот метод нам не нужен здесь. Перенесла его в класс Field
         // public Field GetFieldCopy(Field field)
         // {
         //     AssertIsNotNull(field);
