@@ -73,7 +73,7 @@ namespace SeaBattle.Client
             }
             else
             {
-                var shipsCount = _fieldBuilder.Result.ShipsCount.Select(x => x.Value).Count();
+                var shipsCount = _fieldBuilder.Result.ShipsCount.Select(x => x.Value).Sum();
                 SetShips(playerName, shipsCount);
             }
         }
@@ -120,11 +120,12 @@ namespace SeaBattle.Client
             Console.WriteLine("Set ships storage");
 
             var shipTypes = Enum.GetValues(typeof(ShipType)).Cast<ShipType>();
-            var shipsStorage = new Dictionary<ShipType, int>();
+            Dictionary<ShipType, int> shipsStorage;
+            int count;
 
             do
             {
-                int count;
+                shipsStorage = new Dictionary<ShipType, int>();
                 foreach (var shipType in shipTypes)
                 {
                     Console.WriteLine($"Choose how many {shipType}s you want to have on the board:");
