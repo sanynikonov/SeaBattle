@@ -6,4 +6,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SeaBattle.Domain\SeaBattle.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
