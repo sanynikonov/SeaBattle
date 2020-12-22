@@ -11,7 +11,7 @@ namespace SeaBattle.Domain
         protected readonly Field firstPlayerField;
         protected readonly Field secondPlayerField;
 
-        private Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondPlayerField : firstPlayerField;
+        public Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondPlayerField : firstPlayerField;
 
         public GameState CurrentState { get; private set; } = GameState.NotStarted;
         public Player Winner { get; private set; }
