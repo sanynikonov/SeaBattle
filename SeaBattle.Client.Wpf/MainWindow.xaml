@@ -45,7 +45,7 @@
                      Margin="10 0 10 10" Grid.Column="0" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Width="120"/>
 
             <Button x:Name="PlayButton" Content="Play" Margin="10" Grid.Column="0" HorizontalAlignment="Left" Width="75" Height="23" Click="PlayButton_Click"/>
-            <Button x:Name="AutoFireButton" Margin="10" Grid.Column="0" Content="AutoFire" HorizontalAlignment="Left" Width="130" Height="23" Command="{Binding AutoShootCommand}"/>
+            <Button x:Name="AutoFireButton" Margin="10" Grid.Column="0" Content="AutoFire" HorizontalAlignment="Left" Width="130" Height="23" Click="AutoFireButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

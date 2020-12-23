@@ -49,24 +49,35 @@ namespace SeaBattle.Client.Wpf
 
         #endregion
 
-        public EventBasedGameService GameService { get; set; }
+        public event GameEventHandler GameStarted;
+        public event GameEventHandler GameEnded;
+        public event GameEventHandler MoveWasMade;
+
+        private IGameService _gameService { get; set; }
         public BoardStatus Status { get; set; }
 
         public void AutoShoot()
         {
+            ShootByStrategy();
+
+            MakeBotMove();
+        }
+
+        private void ShootByStrategy()
+        {
             var strategyFactory = new BestSuitFindCellStrategyFactory();
 
-            var wreckedDecks = GameService.CurrentPlayer == GameService.FirstPlayer
+            var wreckedDecks = _gameService.CurrentPlayer == _gameService.FirstPlayer
                 ? Status?.SecondFieldWoundedShipsCoordinates
                 : Status?.FirstFieldWoundedShipsCoordinates;
 
-            Status = GameService.MakeMove(strategyFactory.GetFindCellStrategy(wreckedDecks));
+            Status = _gameService.MakeMove(strategyFactory.GetFindCellStrategy(wreckedDecks));
         }
 
         public void InitGame()
         {
-            var builder1 = new FieldBuilder();
-            var builder2 = new FieldBuilder();
+            var humanFieldBuilder = new FieldBuilder();
+            var botFieldBuilder = new FieldBuilder();
 
             var ships = new Dictionary<ShipType, int>
             {
@@ -76,29 +87,50 @@ namespace SeaBattle.Client.Wpf
                 { ShipType.FourDeck, FourDeckShipsCount }
             };
 
-            builder1.SetDimension(FieldSize);
-            builder1.SetShipsStorage(new Dictionary<ShipType, int>(ships));
+            humanFieldBuilder.SetDimension(FieldSize);
+            humanFieldBuilder.SetShipsStorage(new Dictionary<ShipType, int>(ships));
             
-            builder2.SetDimension(FieldSize);
-            builder2.SetShipsStorage(new Dictionary<ShipType, int>(ships));
+            botFieldBuilder.SetDimension(FieldSize);
+            botFieldBuilder.SetShipsStorage(new Dictionary<ShipType, int>(ships));
 
             var director = new FieldDirector();
-            director.SetShipsRandomly(builder1);
-            director.SetShipsRandomly(builder2);
+            director.SetShipsRandomly(humanFieldBuilder);
+            director.SetShipsRandomly(botFieldBuilder);
 
-            var info = new GameStartInfo(new Player { Name = "Cock" }, new Player { Name = "Faggot" }, builder1.Result, builder2.Result);
+            var info = new GameStartInfo(new Player { Name = "Human" }, new Player { Name = "Bot" }, humanFieldBuilder.Result, botFieldBuilder.Result);
 
-            GameService = new EventBasedGameService(info, new FieldService());
+            var gameService = new EventBasedGameService(info, new FieldService());
+
+            gameService.GameStarted += GameStarted;
+            gameService.GameEnded += GameEnded;
+            gameService.MoveWasMade += MoveWasMade;
+
+            _gameService = gameService;
+        }
+
+        public void StartGame()
+        {
+            _gameService.StartGame();
         }
 
         public void MakeMove(int cellX, int cellY)
         {
-            if (GameService.CurrentPlayerOppositeField.Cells[cellX, cellY].IsOpened)
+            var oppositeField = _gameService.CurrentPlayer == _gameService.FirstPlayer
+                ? _gameService.SecondPlayerFieldCopy
+                : _gameService.FirstPlayerFieldCopy;
+
+            if (oppositeField.Cells[cellX, cellY].IsOpened || _gameService.CurrentState == GameState.Ended)
                 return;
 
-            Status = GameService.MakeMove(new Point(cellX, cellY));
+            Status = _gameService.MakeMove(new Point(cellX, cellY));
 
-            AutoShoot();
+            MakeBotMove();
+        }
+
+        private void MakeBotMove()
+        {
+            if (_gameService.CurrentState != GameState.Ended)
+                ShootByStrategy();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

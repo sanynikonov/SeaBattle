@@ -12,7 +12,7 @@ namespace SeaBattle.Client.Wpf
 {
     public partial class MainWindow : Window
     {
-        private GameViewModel _gameViewModel;
+        private readonly GameViewModel _gameViewModel;
 
         public MainWindow()
         {
@@ -23,18 +23,77 @@ namespace SeaBattle.Client.Wpf
             DrawGrid(1, paintSurfacePlayer2);
 
             _gameViewModel = new GameViewModel();
+            
+            _gameViewModel.GameStarted +=
+                (service, args) => DrawField(service.FirstPlayerFieldCopy, paintSurfacePlayer1);
+            _gameViewModel.GameStarted +=
+                (service, args) => DrawField(service.SecondPlayerFieldCopy, paintSurfacePlayer2);
+            _gameViewModel.MoveWasMade += (service, args) => UpdateCurrentOppositeField(service);
+
+            _gameViewModel.GameEnded += (service, args) => MessageBox.Show($"{service.Winner.Name} is the winner!");
+
             DataContext = _gameViewModel;
         }
+
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _gameViewModel.InitGame();
+            }
+            catch (FieldBuilderException)
+            {
+                MessageBox.Show("Unacceptable parameters for game start. Please provide another.");
+                return;
+            }
+
+            _gameViewModel.StartGame();
+        }
+
+        private void UpdateCurrentOppositeField(GameService gameService)
+        {
+            Canvas targetSurface;
+            if (gameService.CurrentPlayer == gameService.SecondPlayer)
+                targetSurface = paintSurfacePlayer1;
+            else if (gameService.CurrentPlayer == gameService.FirstPlayer)
+                targetSurface = paintSurfacePlayer2;
+            else
+                throw new Exception();
+
+            DrawField(gameService.CurrentPlayerOppositeField, targetSurface);
+        }
+
+        private void DrawField(Field field, Canvas targetSurface)
+        {
+            targetSurface.Children.Clear();
+            DrawGrid(field.Dimension, targetSurface);
+            DrawShips(field, targetSurface);
+        }
+        
         private void AutoFireButton_Click(object sender, RoutedEventArgs e)
         {
-            _gameViewModel.AutoShoot();
+            try
+            {
+                _gameViewModel.AutoShoot();
+            }
+            catch (GameServiceException)
+            {
+                MessageBox.Show("Please start new game!");
+            }
         }
 
         private void OnClickOnEnemyField(object sender, MouseButtonEventArgs e)
         {
             var point = GetCellCoordinates(e);
-
-            _gameViewModel.MakeMove(point.X, point.Y);
+            
+            try
+            {
+                _gameViewModel.MakeMove(point.X, point.Y);
+            }
+            catch (GameServiceException)
+            {
+                MessageBox.Show("Please start new game!");
+            }
         }
 
         private Domain.Point GetCellCoordinates(MouseButtonEventArgs e)
@@ -61,40 +120,6 @@ namespace SeaBattle.Client.Wpf
                 cellY = fieldSize;
 
             return new Domain.Point(cellX, cellY);
-        }
-
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                _gameViewModel.InitGame();
-            }
-            catch (FieldBuilderException)
-            {
-                MessageBox.Show("Unacceptable parameters for game start. Please provide another.");
-                return;
-            }
-
-            _gameViewModel.GameService.GameStarted += (field, args) => DisplayField(field);
-            _gameViewModel.GameService.MoveWasMade += (field, args) => DisplayField(field);
-
-            _gameViewModel.GameService.StartGame();
-        }
-
-        private void DisplayField(GameService gameService)
-        {
-            Canvas targetSurface;
-            if (gameService.CurrentPlayer == gameService.SecondPlayer)
-                targetSurface = paintSurfacePlayer1;
-            else if (gameService.CurrentPlayer == gameService.FirstPlayer)
-                targetSurface = paintSurfacePlayer2;
-            else
-                throw new Exception();
-
-
-            targetSurface.Children.Clear();
-            DrawGrid(gameService.CurrentPlayerOppositeField.Dimension, targetSurface);
-            DrawShips(gameService.CurrentPlayerOppositeField, targetSurface);
         }
 
         private void DrawShips(Field field, Canvas paintSurface)
