@@ -12,18 +12,23 @@ namespace SeaBattle.Client.Wpf
 {
     public partial class MainWindow : Window
     {
-        private readonly GameViewModel _gameViewModel;
+        private GameViewModel _gameViewModel;
 
         public MainWindow()
         {
             ResizeMode = ResizeMode.NoResize;
             InitializeComponent();
+            InitializeViewModel();
             Show();
-            DrawGrid(1, paintSurfacePlayer1);  // for beauty
-            DrawGrid(1, paintSurfacePlayer2);
 
+            DrawGrid(1, paintSurfacePlayer1);
+            DrawGrid(1, paintSurfacePlayer2);
+        }
+
+        private void InitializeViewModel()
+        {
             _gameViewModel = new GameViewModel();
-            
+
             _gameViewModel.GameStarted +=
                 (service, args) => DrawField(service.FirstPlayerFieldCopy, paintSurfacePlayer1);
             _gameViewModel.GameStarted +=
