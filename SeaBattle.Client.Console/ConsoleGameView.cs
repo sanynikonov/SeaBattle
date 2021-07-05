@@ -29,9 +29,9 @@ namespace SeaBattle.Client
             int answer = -1;
             BoardStatus lastBoardStatus = null;
 
-            while (game.CurrentState != GameState.Ended && answer != 0)
+            while (GameStateHolder.Instance.CurrentState != GameState.Ended && answer != 0)
             {
-                Console.WriteLine($"{game.CurrentPlayer.Name}, it's your turn now!");
+                Console.WriteLine($"{GameStateHolder.Instance.CurrentPlayer.Name}, it's your turn now!");
 
                 Console.WriteLine(Menu);
                 Console.WriteLine("Your choice");
@@ -57,7 +57,7 @@ namespace SeaBattle.Client
 
         private BoardStatus MakeMove(BoardStatus lastBoardStatus)
         {
-            var wreckedDecks = game.CurrentPlayer == game.FirstPlayer
+            var wreckedDecks = GameStateHolder.Instance.CurrentPlayer == GameStateHolder.Instance.FirstPlayer
                 ? lastBoardStatus?.SecondFieldWoundedShipsCoordinates
                 : lastBoardStatus?.FirstFieldWoundedShipsCoordinates;
 

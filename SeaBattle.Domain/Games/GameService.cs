@@ -8,37 +8,24 @@ namespace SeaBattle.Domain
     public class GameService : IGameService
     {
         protected readonly IFieldService fieldService;
-        protected readonly Field firstPlayerField;
-        protected readonly Field secondPlayerField;
-
-        private Field CurrentPlayerOppositeField => CurrentPlayer == FirstPlayer ? secondPlayerField : firstPlayerField;
-
-        public GameState CurrentState { get; private set; } = GameState.NotStarted;
-        public Player Winner { get; private set; }
-        public Player CurrentPlayer { get; private set; }
-
-        public Field FirstPlayerFieldCopy => fieldService.GetFieldCopy(firstPlayerField);
-        public Field SecondPlayerFieldCopy => fieldService.GetFieldCopy(secondPlayerField);
-
-        public Player FirstPlayer { get; private set; }
-        public Player SecondPlayer { get; private set; }
+      
+        public Field FirstPlayerFieldCopy => GameStateHolder.Instance.FirstPlayer.Field.CloneField(); // fieldService.GetFieldCopy(firstPlayerField);
+        public Field SecondPlayerFieldCopy => GameStateHolder.Instance.SecondPlayer.Field.CloneField(); // fieldService.GetFieldCopy(secondPlayerField);
 
         public GameService(GameStartInfo startInfo, IFieldService fieldService)
         {
-            FirstPlayer = startInfo.FirstPlayer;
-            SecondPlayer = startInfo.SecondPlayer;
-            firstPlayerField = startInfo.FirstPlayerField;
-            secondPlayerField = startInfo.SecondPlayerField;
+            GameStateHolder.Instance.FirstPlayer = startInfo.FirstPlayer;
+            GameStateHolder.Instance.SecondPlayer = startInfo.SecondPlayer;
 
             this.fieldService = fieldService;
         }
 
         public virtual BoardStatus MakeMove(Point coordinates)
         {
-            AssertGameStarted();
-            AssertGameIsNotEnded();
+            GameStateHolder.Instance.AssertGameStarted();
+            GameStateHolder.Instance.AssertGameIsNotEnded();
 
-            fieldService.OpenCell(CurrentPlayerOppositeField, coordinates);
+            fieldService.OpenCell(GameStateHolder.Instance.CurrentPlayerOppositeField, coordinates);
 
             if (CheckGameEnd())
             {
@@ -46,13 +33,13 @@ namespace SeaBattle.Domain
             }
             else
             {
-                SwitchCurrentPlayer();
+                GameStateHolder.Instance.SwitchCurrentPlayer();
             }
 
             return new BoardStatus
             {
-                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(firstPlayerField),
-                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(secondPlayerField)
+                FirstFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.FirstPlayer.Field),
+                SecondFieldWoundedShipsCoordinates = fieldService.GetDamagedShipsCheckedDecksCoordinates(GameStateHolder.Instance.SecondPlayer.Field)
             };
         }
 
@@ -63,58 +50,37 @@ namespace SeaBattle.Domain
                 throw new ArgumentNullException(nameof(strategy));
             }
 
-            var coordinates = strategy.FindCell(CurrentPlayerOppositeField);
+            var coordinates = strategy.FindCell(GameStateHolder.Instance.CurrentPlayerOppositeField);
 
             return MakeMove(coordinates);
         }
 
         public virtual void StartGame()
         {
-            AssertGameIsNotEnded();
+            GameStateHolder.Instance.AssertGameIsNotEnded();
 
-            if (CurrentState == GameState.Started)
+            if (GameStateHolder.Instance.CurrentState == GameState.Started)
             {
                 throw new GameServiceException("Game is already started.");
             }
 
-            CurrentState = GameState.Started;
+            GameStateHolder.Instance.CurrentState = GameState.Started;
 
-            CurrentPlayer = FirstPlayer;
+            GameStateHolder.Instance.CurrentPlayer = GameStateHolder.Instance.FirstPlayer;
         }
 
         protected virtual void EndGame()
         {
-            Winner = CurrentPlayer;
-            CurrentState = GameState.Ended;
+            GameStateHolder.Instance.Winner = GameStateHolder.Instance.CurrentPlayer;
+            GameStateHolder.Instance.CurrentState = GameState.Ended;
         }
 
         protected bool CheckGameEnd()
         {
-            return CurrentPlayerOppositeField.Cells
+            return GameStateHolder.Instance.CurrentPlayerOppositeField.Cells
                 .Cast<Cell>()
                 .Where(x => x.HasDeck)
                 .All(x => x.IsOpened);
-        }
-
-        protected void SwitchCurrentPlayer()
-        {
-            CurrentPlayer = CurrentPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
-        }
-
-        private void AssertGameIsNotEnded()
-        {
-            if (CurrentState == GameState.Ended)
-            {
-                throw new GameServiceException("Game is already ended.");
-            }
-        }
-
-        private void AssertGameStarted()
-        {
-            if (CurrentState != GameState.Started)
-            {
-                throw new GameServiceException("Game is not started yet.");
-            }
         }
     }
 }
